@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hydro_Pulse - Flood Simulation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#004b74",
+                        "surface-variant": "#273647",
+                        "tertiary": "#bcc7de",
+                        "on-primary-fixed": "#001f27",
+                        "primary": "#4cd6fb",
+                        "surface-container-low": "#0d1c2d",
+                        "on-primary-container": "#00414f",
+                        "outline-variant": "#3d494d",
+                        "surface-container-lowest": "#010f1f",
+                        "primary-fixed-dim": "#4cd6fb",
+                        "outline": "#869398",
+                        "on-tertiary-fixed-variant": "#3c475a",
+                        "secondary-fixed": "#cde5ff",
+                        "inverse-surface": "#d4e4fa",
+                        "surface": "#051424",
+                        "on-primary": "#003642",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#233143",
+                        "on-tertiary-fixed": "#111c2d",
+                        "on-surface": "#d4e4fa",
+                        "surface-dim": "#051424",
+                        "on-surface-variant": "#bcc9ce",
+                        "on-secondary": "#003352",
+                        "inverse-primary": "#00677d",
+                        "tertiary-container": "#9aa5bc",
+                        "secondary": "#94ccff",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#b3ebff",
+                        "surface-tint": "#4cd6fb",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "on-tertiary-container": "#303b4e",
+                        "on-background": "#d4e4fa",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#94ccff",
+                        "secondary-container": "#0378b7",
+                        "surface-container": "#122131",
+                        "on-error": "#690005",
+                        "background": "#051424",
+                        "tertiary-fixed": "#d8e3fb",
+                        "surface-container-high": "#1c2b3c",
+                        "surface-bright": "#2c3a4c",
+                        "on-secondary-container": "#f5f8ff",
+                        "surface-container-highest": "#273647",
+                        "primary-container": "#00b4d8",
+                        "on-secondary-fixed": "#001d32",
+                        "tertiary-fixed-dim": "#bcc7de",
+                        "on-tertiary": "#263143"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "container-max-width": "1440px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "technical-data": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "technical-data": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .map-overlay {
+            background: linear-gradient(180deg, rgba(5, 20, 36, 0.8) 0%, rgba(5, 20, 36, 0) 20%, rgba(5, 20, 36, 0) 80%, rgba(5, 20, 36, 0.9) 100%);
+        }
+        .timeline-progress {
+            width: 45%;
+        }
+        .heatmap-gradient {
+            background: linear-gradient(90deg, #4cd6fb 0%, #00b4d8 30%, #0378b7 70%, #003352 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background h-screen overflow-hidden flex font-sans antialiased">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-surface dark:bg-surface h-screen w-20 flex flex-col border-r border-outline-variant fixed left-0 top-0 z-50 py-margin-desktop items-center">
+<!-- Brand Logo -->
+<div class="mb-8 flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl mb-1" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+</div>
+<!-- Navigation Tabs -->
+<div class="flex flex-col w-full flex-1 gap-2">
+<!-- Dashboard (Inactive) -->
+<a class="w-full flex flex-col items-center justify-center py-4 text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1 text-2xl">dashboard</span>
+<span class="font-label-caps text-label-caps text-[10px] text-center w-full overflow-hidden text-ellipsis px-1">Dashboard</span>
+</a>
+<!-- Scenario (Inactive) -->
+<a class="w-full flex flex-col items-center justify-center py-4 text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1 text-2xl">settings_suggest</span>
+<span class="font-label-caps text-label-caps text-[10px] text-center w-full overflow-hidden text-ellipsis px-1">Scenario</span>
+</a>
+<!-- Simulation (Active) -->
+<a class="w-full flex flex-col items-center justify-center py-4 text-primary bg-primary-container/10 border-r-2 border-primary scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1 text-2xl" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-label-caps text-label-caps text-[10px] text-center w-full overflow-hidden text-ellipsis px-1">Simulation</span>
+</a>
+<!-- Results (Inactive) -->
+<a class="w-full flex flex-col items-center justify-center py-4 text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1 text-2xl">assessment</span>
+<span class="font-label-caps text-label-caps text-[10px] text-center w-full overflow-hidden text-ellipsis px-1">Results</span>
+</a>
+<!-- Emergency (Inactive) -->
+<a class="w-full flex flex-col items-center justify-center py-4 text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1 text-2xl text-error">emergency</span>
+<span class="font-label-caps text-label-caps text-[10px] text-center w-full overflow-hidden text-ellipsis px-1">Emergency</span>
+</a>
+<!-- Data/Layers (Inactive) -->
+<a class="w-full flex flex-col items-center justify-center py-4 text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1 text-2xl">layers</span>
+<span class="font-label-caps text-label-caps text-[10px] text-center w-full overflow-hidden text-ellipsis px-1">Data/Layers</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-20 flex-1 relative h-full w-full">
+<!-- TopNavBar (Shared Component - Docked) -->
+<header class="bg-surface/80 backdrop-blur-md fixed top-0 right-0 left-20 z-40 flex justify-between items-center px-margin-desktop h-16 border-b border-outline-variant">
+<!-- Brand / Nav Links -->
+<div class="flex items-center gap-8 h-full">
+<div class="font-headline-md text-headline-md text-primary font-bold">Hydro_Pulse</div>
+<nav class="hidden md:flex items-center gap-6 h-full font-technical-data text-technical-data">
+<a class="text-on-surface-variant hover:text-primary transition-colors h-full flex items-center" href="#">Current Project</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors h-full flex items-center" href="#">Demo Dam</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 h-full flex items-center mt-1" href="#">Simulation Status</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors h-full flex items-center" href="#">System Health</a>
+<div class="flex items-center gap-2 px-3 py-1 bg-primary-container/10 border border-primary/30 rounded text-[10px] font-bold text-primary tracking-widest ml-4"><span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>PRECOMPUTED MVP SCENARIO</div></nav>
+</div>
+<!-- Trailing Icons -->
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors w-10 h-10 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors w-10 h-10 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors w-10 h-10 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- GIS Canvas Map -->
+<div class="absolute inset-0 z-0">
+<!-- Map Placeholder Background -->
+<div class="bg-cover bg-center w-full h-full opacity-60" data-alt="A highly detailed, top-down satellite view of Demo River valley overlaid with a glowing, cyan-to-deep-blue heatmap indicating flood depths. Precomputed MVP scenario visualization." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD_VFMh0UGuRHnYx-M2epX64vjZfrM-ociNmpZ5nFFqTLRaHeXLZ9Zlt8cQRMEusjzKexZhsXD3Hk-j07fkDEf-VWVmAgDhfxrwne05oPZ5htgigfDExHTb7CMUCCS9wP5V8sKSa_xuqle7A5hWrL1pWH767imhSnkfpnn4B7kXDkVXNWyM9w9CG2act8aAFGBEhJPTBfTu6I-K74TPYcEoWxd9jbrVzTaWEvjshbJqCzXd5Vw2KOEl')"></div>
+<!-- Map Vignette Overlay -->
+<div class="absolute inset-0 map-overlay z-10 pointer-events-none"></div>
+<!-- Simulated Animation Layer (Hypothetical Shader/Particle Layer could go here if using custom tags, but standard prompt asks for specific UI, we'll use a static representation of the 'wow' map underneath) -->
+<!-- We will use a placeholder shader element to fulfill the "wow" factor requirement for animated assets if provided, though none specifically passed in the prompt text, it's good practice for this environment -->
+</div>
+<!-- Floating UI Panels -->
+<!-- Top Center: Simulation Time Readout -->
+<div class="absolute top-24 left-1/2 transform -translate-x-1/2 z-30">
+<div class="bg-surface-container/80 backdrop-blur-md border border-outline-variant px-6 py-3 rounded shadow-[0_4px_24px_rgba(0,0,0,0.5)] flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">schedule</span>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant">SIMULATION TIME</span>
+<span class="font-headline-lg text-headline-lg text-on-surface font-mono tracking-wider">T+00:45:00</span>
+</div>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-on-surface-variant">REAL TIME</span>
+<span class="font-technical-data text-technical-data text-on-surface font-mono">14:22:10 UTC</span>
+</div>
+</div>
+</div>
+<!-- Bottom Left: Legend (Depth Levels) -->
+<div class="absolute bottom-32 left-margin-desktop z-30 w-64">
+<div class="bg-surface-container/90 backdrop-blur-md border border-outline-variant rounded p-4 shadow-[0_4px_24px_rgba(0,0,0,0.5)]">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-4 border-b border-outline-variant pb-2">FLOOD DEPTH LEGEND</h3>
+<div class="h-2 w-full heatmap-gradient rounded-full mb-3"></div>
+<div class="flex justify-between font-technical-data text-technical-data text-on-surface mb-4">
+<span>0.1m</span>
+<span>1.5m</span>
+<span>&gt;3.0m</span>
+</div>
+<ul class="space-y-2">
+<li class="flex items-center gap-3 font-technical-data text-technical-data text-on-surface-variant">
+<div class="w-3 h-3 rounded-full bg-primary shadow-[0_0_8px_rgba(76,214,251,0.5)]"></div>
+<span>Low Impact (&lt; 0.5m)</span>
+</li>
+<li class="flex items-center gap-3 font-technical-data text-technical-data text-on-surface-variant">
+<div class="w-3 h-3 rounded-full bg-secondary-container"></div>
+<span>Moderate (0.5m - 1.5m)</span>
+</li>
+<li class="flex items-center gap-3 font-technical-data text-technical-data text-on-surface-variant">
+<div class="w-3 h-3 rounded-full bg-on-secondary"></div>
+<span>Severe (1.5m - 3.0m)</span>
+</li>
+<li class="flex items-center gap-3 font-technical-data text-technical-data text-error">
+<div class="w-3 h-3 rounded-full bg-error shadow-[0_0_8px_rgba(255,180,171,0.5)]"></div>
+<span>Critical (&gt; 3.0m)</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- Bottom Center: Simulation Timeline & Controls -->
+<div class="absolute bottom-margin-desktop left-1/2 transform -translate-x-1/2 z-30 w-full max-w-4xl px-4">
+<div class="bg-surface-container/90 backdrop-blur-md border border-outline-variant rounded-lg p-4 shadow-[0_4px_24px_rgba(0,0,0,0.5)] flex flex-col gap-4">
+<!-- Timeline Slider Area -->
+<div class="relative pt-6 pb-2">
+<!-- Markers -->
+<div class="absolute top-0 left-0 w-full flex justify-between font-label-caps text-label-caps text-on-surface-variant px-1">
+<span>T+00</span>
+<span>T+30</span>
+<span>T+60</span>
+<span>T+90</span>
+<span>T+120</span>
+</div>
+<!-- Track -->
+<div class="h-1.5 w-full bg-surface-variant rounded-full overflow-hidden relative cursor-pointer">
+<div class="h-full bg-primary timeline-progress relative">
+<!-- Animated glow on progress head -->
+<div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50"></div>
+</div>
+</div>
+<!-- Thumb / Current Position -->
+<div class="absolute top-[28px] left-[45%] transform -translate-x-1/2 w-4 h-4 bg-primary rounded-full border-2 border-surface shadow-[0_0_10px_rgba(76,214,251,0.8)] cursor-grab"></div>
+</div>
+<!-- Controls -->
+<div class="flex items-center justify-between border-t border-outline-variant pt-3">
+<div class="flex items-center gap-2">
+<span class="font-technical-data text-technical-data text-on-surface-variant">Step Rate:</span>
+<select class="bg-surface-variant border border-outline-variant text-on-surface font-technical-data text-technical-data rounded px-2 py-1 focus:ring-1 focus:ring-primary outline-none">
+<option>1x (Realtime)</option>
+<option selected="">10x</option>
+<option>60x</option>
+</select>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-colors group">
+<span class="material-symbols-outlined text-[20px] group-hover:-rotate-45 transition-transform">replay</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-[0_0_15px_rgba(76,214,251,0.4)] hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">pause</span>
+</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">skip_next</span>
+</button>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-technical-data text-technical-data text-on-surface-variant">Export:</span>
+<button class="bg-surface-variant hover:bg-surface-bright text-on-surface border border-outline-variant rounded px-3 py-1 font-technical-data text-technical-data transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">download</span>
+                            CSV
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Mini Analytics Panel (Bento Grid style) -->
+<div class="absolute top-24 right-margin-desktop z-30 w-80 space-y-4">
+<!-- Impact Summary Card -->
+<div class="bg-surface-container/80 backdrop-blur-md border border-outline-variant rounded p-4 shadow-[0_4px_24px_rgba(0,0,0,0.5)]">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-3">CURRENT IMPACT EST.</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface p-3 border border-outline-variant rounded">
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-1">AREA INUNDATED</div>
+<div class="font-headline-md text-headline-md text-primary font-mono">14.2<span class="text-body-sm text-on-surface-variant"> km²</span></div>
+</div>
+<div class="bg-surface p-3 border border-outline-variant rounded border-l-2 border-l-error">
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-1">POP. AFFECTED</div>
+<div class="font-headline-md text-headline-md text-error font-mono">3,450</div>
+</div>
+</div>
+</div>
+<!-- Flow Rate Chart Placeholder -->
+<div class="bg-surface-container/80 backdrop-blur-md border border-outline-variant rounded p-4 shadow-[0_4px_24px_rgba(0,0,0,0.5)] h-48 flex flex-col">
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant">BREACH FLOW RATE (m³/s)</h3>
+<span class="material-symbols-outlined text-primary text-[18px]">show_chart</span>
+</div>
+<!-- Abstract chart representation using flex/borders -->
+<div class="flex-1 border-b border-l border-outline-variant relative mt-2">
+<!-- Grid lines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
+<div class="border-t border-outline w-full h-0"></div>
+<div class="border-t border-outline w-full h-0"></div>
+<div class="border-t border-outline w-full h-0"></div>
+</div>
+<!-- Chart line simulation -->
+<div class="absolute bottom-0 left-0 w-full h-full flex items-end">
+<!-- SVG placeholder for chart line -->
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

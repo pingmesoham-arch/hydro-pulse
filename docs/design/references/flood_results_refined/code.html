@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hydro_Pulse - Flood Results</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#004b74",
+                    "surface-variant": "#273647",
+                    "tertiary": "#bcc7de",
+                    "on-primary-fixed": "#001f27",
+                    "primary": "#4cd6fb",
+                    "surface-container-low": "#0d1c2d",
+                    "on-primary-container": "#00414f",
+                    "outline-variant": "#3d494d",
+                    "surface-container-lowest": "#010f1f",
+                    "primary-fixed-dim": "#4cd6fb",
+                    "outline": "#869398",
+                    "on-tertiary-fixed-variant": "#3c475a",
+                    "secondary-fixed": "#cde5ff",
+                    "inverse-surface": "#d4e4fa",
+                    "surface": "#051424",
+                    "on-primary": "#003642",
+                    "on-error-container": "#ffdad6",
+                    "inverse-on-surface": "#233143",
+                    "on-tertiary-fixed": "#111c2d",
+                    "on-surface": "#d4e4fa",
+                    "surface-dim": "#051424",
+                    "on-surface-variant": "#bcc9ce",
+                    "on-secondary": "#003352",
+                    "inverse-primary": "#00677d",
+                    "tertiary-container": "#9aa5bc",
+                    "secondary": "#94ccff",
+                    "error-container": "#93000a",
+                    "primary-fixed": "#b3ebff",
+                    "surface-tint": "#4cd6fb",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "on-tertiary-container": "#303b4e",
+                    "on-background": "#d4e4fa",
+                    "error": "#ffb4ab",
+                    "secondary-fixed-dim": "#94ccff",
+                    "secondary-container": "#0378b7",
+                    "surface-container": "#122131",
+                    "on-error": "#690005",
+                    "background": "#051424",
+                    "tertiary-fixed": "#d8e3fb",
+                    "surface-container-high": "#1c2b3c",
+                    "surface-bright": "#2c3a4c",
+                    "on-secondary-container": "#f5f8ff",
+                    "surface-container-highest": "#273647",
+                    "primary-container": "#00b4d8",
+                    "on-secondary-fixed": "#001d32",
+                    "tertiary-fixed-dim": "#bcc7de",
+                    "on-tertiary": "#263143"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "32px",
+                    "container-max-width": "1440px",
+                    "unit": "4px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "headline-xl": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "technical-data": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "technical-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Custom scrollbar for technical density */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3d494d; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #869398; }
+    </style>
+</head>
+<body class="bg-background text-on-background h-screen w-screen overflow-hidden flex font-sans selection:bg-primary-container selection:text-on-primary-container">
+<!-- 
+      SIDENAV BAR (Generated from JSON)
+      Active State: "Results" matches the analytical screen intent.
+    -->
+<nav class="fixed left-0 top-0 h-full w-20 flex flex-col items-center py-margin-desktop bg-surface border-r border-outline-variant z-50 transition-all duration-300">
+<!-- Brand Logo -->
+<div class="mb-12 flex flex-col items-center justify-center cursor-pointer group">
+<div class="w-10 h-10 rounded-lg bg-primary-container/10 border border-primary flex items-center justify-center mb-2 group-hover:bg-primary-container/20 transition-colors">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+</div>
+<span class="font-label-caps text-label-caps font-bold text-primary text-[10px]">Hydro_Pulse</span>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col w-full flex-1 gap-2">
+<!-- Dashboard -->
+<a class="w-full flex flex-col items-center justify-center py-3 text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined mb-1 group-active:scale-95 transition-transform" style="font-size: 24px;">dashboard</span>
+<span class="font-label-caps text-label-caps text-[9px] truncate w-full text-center px-1">Dashboard</span>
+</a>
+<!-- Scenario -->
+<a class="w-full flex flex-col items-center justify-center py-3 text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined mb-1 group-active:scale-95 transition-transform" style="font-size: 24px;">settings_suggest</span>
+<span class="font-label-caps text-label-caps text-[9px] truncate w-full text-center px-1">Scenario</span>
+</a>
+<!-- Simulation -->
+<a class="w-full flex flex-col items-center justify-center py-3 text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined mb-1 group-active:scale-95 transition-transform" style="font-size: 24px;">analytics</span>
+<span class="font-label-caps text-label-caps text-[9px] truncate w-full text-center px-1">Simulation</span>
+</a>
+<!-- Results (ACTIVE TAB) -->
+<a class="w-full flex flex-col items-center justify-center py-3 text-primary bg-primary-container/10 border-r-2 border-primary group relative" href="#">
+<span class="material-symbols-outlined mb-1 group-active:scale-95 transition-transform" style="font-variation-settings: 'FILL' 1; font-size: 24px;">assessment</span>
+<span class="font-label-caps text-label-caps text-[9px] truncate w-full text-center px-1">Results</span>
+</a>
+<!-- Emergency -->
+<a class="w-full flex flex-col items-center justify-center py-3 text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined mb-1 group-active:scale-95 transition-transform" style="font-size: 24px;">emergency</span>
+<span class="font-label-caps text-label-caps text-[9px] truncate w-full text-center px-1">Emergency</span>
+</a>
+<!-- Data/Layers -->
+<a class="w-full flex flex-col items-center justify-center py-3 text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors group mt-auto" href="#">
+<span class="material-symbols-outlined mb-1 group-active:scale-95 transition-transform" style="font-size: 24px;">layers</span>
+<span class="font-label-caps text-label-caps text-[9px] truncate w-full text-center px-1">Data/Layers</span>
+</a>
+</div>
+<!-- User Avatar Placeholder -->
+<div class="mt-4 pt-4 border-t border-outline-variant w-full flex justify-center">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant border border-outline cursor-pointer hover:border-primary transition-colors">
+<span class="material-symbols-outlined" style="font-size: 18px;">person</span>
+</div>
+</div>
+</nav>
+<!-- MAIN CONTENT AREA -->
+<main class="ml-20 flex-1 flex flex-row h-full relative overflow-hidden bg-surface-container-lowest">
+<!-- LEFT PANEL: Results Summary -->
+<aside class="w-96 h-full flex-shrink-0 bg-surface/95 backdrop-blur-md border-r border-outline-variant z-20 flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.5)]">
+<!-- Panel Header -->
+<div class="p-4 border-b border-outline-variant flex items-center justify-between">
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface">Analysis Results</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Scenario ID: DEMO-RIVER-01</p>
+</div>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center hover:bg-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-size: 18px;">download</span>
+</button>
+</div>
+<!-- Panel Content (Scrollable) -->
+<div class="flex-1 overflow-y-auto p-4 space-y-6">
+<!-- Metrics Section -->
+<div>
+<h2 class="font-label-caps text-label-caps text-on-surface-variant mb-3">Key Metrics</h2>
+<div class="grid grid-cols-2 gap-3">
+<!-- Peak Discharge Card -->
+<div class="bg-surface-container p-3 rounded border border-outline-variant relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-error/10 rounded-bl-full blur-xl pointer-events-none"></div>
+<span class="font-label-caps text-[10px] text-on-surface-variant block mb-1">Peak Discharge</span>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-lg text-headline-lg text-error">14,250</span>
+<span class="font-technical-data text-[10px] text-on-surface-variant">m³/s</span>
+</div>
+<div class="mt-2 flex items-center gap-1 text-[10px] text-error font-technical-data">
+<span class="material-symbols-outlined" style="font-size: 12px;">trending_up</span>
+                                +12% vs baseline
+                            </div>
+</div>
+<!-- Max Inundation Card -->
+<div class="bg-surface-container p-3 rounded border border-outline-variant relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-primary/10 rounded-bl-full blur-xl pointer-events-none"></div>
+<span class="font-label-caps text-[10px] text-on-surface-variant block mb-1">Max Inundation</span>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-lg text-headline-lg text-primary">84.2</span>
+<span class="font-technical-data text-[10px] text-on-surface-variant">Demo Dam</span>
+</div>
+<div class="mt-2 flex items-center gap-1 text-[10px] text-on-surface-variant font-technical-data">
+<span class="material-symbols-outlined" style="font-size: 12px;">map</span>
+                                Final Extent
+                            </div>
+</div>
+</div>
+</div>
+<!-- Chart: Discharge Over Time -->
+<div>
+<div class="flex items-center justify-between mb-3">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant">Discharge Hydrograph</h2>
+<span class="font-technical-data text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">Demo Dam</span>
+</div>
+<!-- Simulated Chart Area -->
+<div class="h-40 bg-surface-container-high rounded border border-outline-variant relative p-2 flex flex-col justify-end overflow-hidden group">
+<!-- Grid lines -->
+<div class="absolute inset-0 flex flex-col justify-between p-2 pointer-events-none">
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+</div>
+<!-- Graph Line (Simulated via SVG) -->
+<svg class="absolute inset-0 w-full h-full preserve-3d" preserveaspectratio="none" viewbox="0 0 100 40">
+<path d="M0,35 Q10,35 20,30 T40,10 T60,5 T80,15 T100,25 L100,40 L0,40 Z" fill="url(#grad1)" opacity="0.2"></path>
+<path d="M0,35 Q10,35 20,30 T40,10 T60,5 T80,15 T100,25" fill="none" stroke="#4cd6fb" stroke-width="1.5" vector-effect="non-scaling-stroke"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#4cd6fb;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#4cd6fb;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+<!-- Peak Marker -->
+<circle class="group-hover:r-3 transition-all" cx="60" cy="5" fill="#ffb4ab" r="2"></circle>
+</svg>
+<!-- X Axis Labels -->
+<div class="absolute bottom-1 left-2 right-2 flex justify-between font-technical-data text-[9px] text-on-surface-variant">
+<span>T+0h</span>
+<span>T+6h</span>
+<span>T+12h</span>
+<span>T+18h</span>
+</div>
+</div>
+</div>
+<!-- Chart: Inundated Area (Depth) -->
+<div>
+<h2 class="font-label-caps text-label-caps text-on-surface-variant mb-3">Area by Depth Class</h2>
+<div class="space-y-2">
+<!-- Class 1 -->
+<div class="flex items-center gap-3 font-technical-data text-[11px]">
+<div class="w-24 text-on-surface-variant text-right">&lt; 0.5m</div>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary" style="width: 45%;"></div>
+</div>
+<div class="w-12 text-on-surface text-right">37.8 km²</div>
+</div>
+<!-- Class 2 -->
+<div class="flex items-center gap-3 font-technical-data text-[11px]">
+<div class="w-24 text-on-surface-variant text-right">0.5m - 2.0m</div>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 35%;"></div>
+</div>
+<div class="w-12 text-on-surface text-right">29.4 km²</div>
+</div>
+<!-- Class 3 -->
+<div class="flex items-center gap-3 font-technical-data text-[11px]">
+<div class="w-24 text-on-surface-variant text-right">&gt; 2.0m (Critical)</div>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-error" style="width: 20%;"></div>
+</div>
+<div class="w-12 text-error font-bold text-right">17.0 km²</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- RIGHT AREA: Map & Bottom Table -->
+<section class="flex-1 flex flex-col relative">
+<!-- MAP CANVAS (Infinite Background) -->
+<div class="flex-1 relative z-0 bg-surface-dim overflow-hidden">
+<!-- Map Background Image (Simulated GIS terrain) -->
+<div class="absolute inset-0 w-full h-full bg-cover bg-center opacity-80 mix-blend-screen" data-alt="A highly detailed, top-down dark mode digital topographic map of a river valley system. The UI aesthetic is technical, scientific, and precise. The terrain is rendered in dark monochromatic blues and blacks (#0A0F1E to #111827), with subtle contour lines and grid overlays indicating elevation data. The scene is illuminated by an austere, utilitarian light, emphasizing accurate geospatial representation over realism. Mission-critical UI vibe." data-location="Demo Downstream Catchment" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDuLTwkqz7lviweyycnp4kDFHBSASLpyTGAQXRnGNXucfO5YrDa7k_K-sHVF85_z0aEzmg0Zsx5Zq8lAzplkt8rnwRHDaSBprn95OKQo6579G6LoXlb14Nzv6khozjCdIi8DVNbw3DBSGwwht23Krb53o0KNT6PmKgQl4ImfM_9wScLeM-UExsRdzOXxQJ0V86o0kemMVHsOfxMOoLi_3JHTN9lsf0STle6OdkUOtcd1QLkqMsVMv3W')"></div>
+<!-- Simulated Flood Overlay Layer -->
+<div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle at 40% 60%, rgba(76, 214, 251, 0.15) 0%, rgba(0, 180, 216, 0.05) 30%, transparent 60%);"></div>
+<!-- GIS Grid Overlay for technical feel -->
+<div class="absolute inset-0 bg-[linear-gradient(rgba(61,73,77,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(61,73,77,0.1)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+<!-- Map Tools (Floating Top Right) -->
+<div class="absolute top-4 right-4 flex flex-col gap-2 z-10">
+<button class="w-10 h-10 bg-surface/90 backdrop-blur border border-outline-variant rounded flex items-center justify-center text-on-surface hover:text-primary hover:border-primary transition-colors shadow-lg">
+<span class="material-symbols-outlined" style="font-size: 20px;">layers</span>
+</button>
+<button class="w-10 h-10 bg-surface/90 backdrop-blur border border-outline-variant rounded flex items-center justify-center text-on-surface hover:text-primary hover:border-primary transition-colors shadow-lg">
+<span class="material-symbols-outlined" style="font-size: 20px;">zoom_in</span>
+</button>
+<button class="w-10 h-10 bg-surface/90 backdrop-blur border border-outline-variant rounded flex items-center justify-center text-on-surface hover:text-primary hover:border-primary transition-colors shadow-lg">
+<span class="material-symbols-outlined" style="font-size: 20px;">zoom_out</span>
+</button>
+<button class="w-10 h-10 bg-surface/90 backdrop-blur border border-outline-variant rounded flex items-center justify-center text-on-surface hover:text-primary hover:border-primary transition-colors shadow-lg mt-4">
+<span class="material-symbols-outlined" style="font-size: 20px;">my_location</span>
+</button>
+</div>
+<!-- Arrival Time Markers (Simulated on Map) -->
+<!-- Marker 1: Critical -->
+<div class="absolute top-[30%] left-[45%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group cursor-pointer">
+<div class="bg-surface/90 border border-error px-2 py-1 rounded text-center mb-1 backdrop-blur shadow-lg group-hover:scale-105 transition-transform">
+<div class="font-label-caps text-[8px] text-error">Est. Arrival</div>
+<div class="font-technical-data text-[12px] text-on-surface font-bold">T+ 02:15</div>
+</div>
+<div class="w-4 h-4 rounded-full bg-error/20 border border-error flex items-center justify-center relative">
+<div class="w-1.5 h-1.5 rounded-full bg-error"></div>
+<div class="absolute inset-0 rounded-full border border-error animate-ping opacity-75"></div>
+</div>
+</div>
+<!-- Marker 2: High -->
+<div class="absolute top-[60%] left-[65%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group cursor-pointer">
+<div class="bg-surface/90 border border-secondary-container px-2 py-1 rounded text-center mb-1 backdrop-blur shadow-lg group-hover:scale-105 transition-transform">
+<div class="font-label-caps text-[8px] text-secondary">Est. Arrival</div>
+<div class="font-technical-data text-[12px] text-on-surface font-bold">T+ 05:30</div>
+</div>
+<div class="w-4 h-4 rounded-full bg-secondary-container/20 border border-secondary-container flex items-center justify-center">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary-container"></div>
+</div>
+</div>
+</div>
+<!-- BOTTOM PANEL: Tabular View -->
+<div class="h-64 flex-shrink-0 bg-surface/95 backdrop-blur-md border-t border-outline-variant z-20 flex flex-col shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
+<!-- Table Header/Toolbar -->
+<div class="px-4 py-2 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-size: 18px;">table_chart</span>
+<h3 class="font-label-caps text-label-caps text-on-surface">Location Impact Analysis</h3>
+</div>
+<div class="flex gap-2">
+<button class="text-[11px] font-technical-data px-3 py-1 rounded border border-outline-variant text-on-surface-variant hover:text-primary hover:border-primary transition-colors">Export CSV</button>
+</div>
+</div>
+<!-- Table Container -->
+<div class="flex-1 overflow-auto">
+<table class="w-full text-left border-collapse">
+<thead class="sticky top-0 bg-surface-container-high shadow-sm z-10">
+<tr>
+<th class="font-label-caps text-[10px] text-on-surface-variant py-2 px-4 border-b border-outline-variant font-semibold">Location ID</th>
+<th class="font-label-caps text-[10px] text-on-surface-variant py-2 px-4 border-b border-outline-variant font-semibold">Coordinates</th>
+<th class="font-label-caps text-[10px] text-on-surface-variant py-2 px-4 border-b border-outline-variant font-semibold">Arrival Time</th>
+<th class="font-label-caps text-[10px] text-on-surface-variant py-2 px-4 border-b border-outline-variant font-semibold">Max Depth (m)</th>
+<th class="font-label-caps text-[10px] text-on-surface-variant py-2 px-4 border-b border-outline-variant font-semibold">Risk Level</th>
+<th class="font-label-caps text-[10px] text-on-surface-variant py-2 px-4 border-b border-outline-variant font-semibold text-right">Action</th>
+</tr>
+</thead>
+<tbody class="font-technical-data text-[12px] text-on-surface">
+<!-- Row 1 (Critical) -->
+<tr class="h-9 border-b border-outline-variant/30 hover:bg-surface-variant/40 transition-colors bg-error/5">
+<td class="px-4 py-1 font-bold text-on-surface">Village A</td>
+<td class="px-4 py-1 text-on-surface-variant font-mono text-[11px]">55.9533° N, 3.1883° W</td>
+<td class="px-4 py-1 text-error font-bold">T+ 02:15</td>
+<td class="px-4 py-1 text-on-surface">3.45</td>
+<td class="px-4 py-1">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-error/50 bg-error/10 text-error text-[10px] uppercase font-bold tracking-wider">
+<div class="w-1.5 h-1.5 rounded-full bg-error"></div> Critical
+                                    </span>
+</td>
+<td class="px-4 py-1 text-right">
+<button class="text-primary hover:text-primary-fixed-dim transition-colors"><span class="material-symbols-outlined" style="font-size: 16px;">my_location</span></button>
+</td>
+</tr>
+<!-- Row 2 (High) -->
+<tr class="h-9 border-b border-outline-variant/30 hover:bg-surface-variant/40 transition-colors">
+<td class="px-4 py-1 text-on-surface">Village B</td>
+<td class="px-4 py-1 text-on-surface-variant font-mono text-[11px]">55.9412° N, 3.2001° W</td>
+<td class="px-4 py-1 text-secondary">T+ 05:30</td>
+<td class="px-4 py-1 text-on-surface">1.82</td>
+<td class="px-4 py-1">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-secondary/50 bg-secondary/10 text-secondary text-[10px] uppercase font-bold tracking-wider">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary"></div> High
+                                    </span>
+</td>
+<td class="px-4 py-1 text-right">
+<button class="text-primary hover:text-primary-fixed-dim transition-colors"><span class="material-symbols-outlined" style="font-size: 16px;">my_location</span></button>
+</td>
+</tr>
+<!-- Row 3 (Moderate) -->
+<tr class="h-9 border-b border-outline-variant/30 hover:bg-surface-variant/40 transition-colors bg-surface-container-highest/20">
+<td class="px-4 py-1 text-on-surface">Village C</td>
+<td class="px-4 py-1 text-on-surface-variant font-mono text-[11px]">55.9600° N, 3.1750° W</td>
+<td class="px-4 py-1 text-primary">T+ 08:45</td>
+<td class="px-4 py-1 text-on-surface">0.65</td>
+<td class="px-4 py-1">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-primary/50 bg-primary/10 text-primary text-[10px] uppercase font-bold tracking-wider">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div> Mod
+                                    </span>
+</td>
+<td class="px-4 py-1 text-right">
+<button class="text-primary hover:text-primary-fixed-dim transition-colors"><span class="material-symbols-outlined" style="font-size: 16px;">my_location</span></button>
+</td>
+</tr>
+<!-- Row 4 (Low) -->
+<tr class="h-9 border-b border-outline-variant/30 hover:bg-surface-variant/40 transition-colors">
+<td class="px-4 py-1 text-on-surface">Town A</td>
+<td class="px-4 py-1 text-on-surface-variant font-mono text-[11px]">55.9321° N, 3.2210° W</td>
+<td class="px-4 py-1 text-on-surface-variant">T+ 14:20</td>
+<td class="px-4 py-1 text-on-surface">0.15</td>
+<td class="px-4 py-1">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-tertiary/50 bg-tertiary/10 text-tertiary text-[10px] uppercase font-bold tracking-wider">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary"></div> Low
+                                    </span>
+</td>
+<td class="px-4 py-1 text-right">
+<button class="text-primary hover:text-primary-fixed-dim transition-colors"><span class="material-symbols-outlined" style="font-size: 16px;">my_location</span></button>
+</td>
+</tr>
+<!-- Row 5 (Low) -->
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+</body></html>

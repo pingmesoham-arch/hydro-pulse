@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hydro_Pulse - Emergency</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#004b74",
+                      "surface-variant": "#273647",
+                      "tertiary": "#bcc7de",
+                      "on-primary-fixed": "#001f27",
+                      "primary": "#4cd6fb",
+                      "surface-container-low": "#0d1c2d",
+                      "on-primary-container": "#00414f",
+                      "outline-variant": "#3d494d",
+                      "surface-container-lowest": "#010f1f",
+                      "primary-fixed-dim": "#4cd6fb",
+                      "outline": "#869398",
+                      "on-tertiary-fixed-variant": "#3c475a",
+                      "secondary-fixed": "#cde5ff",
+                      "inverse-surface": "#d4e4fa",
+                      "surface": "#051424",
+                      "on-primary": "#003642",
+                      "on-error-container": "#ffdad6",
+                      "inverse-on-surface": "#233143",
+                      "on-tertiary-fixed": "#111c2d",
+                      "on-surface": "#d4e4fa",
+                      "surface-dim": "#051424",
+                      "on-surface-variant": "#bcc9ce",
+                      "on-secondary": "#003352",
+                      "inverse-primary": "#00677d",
+                      "tertiary-container": "#9aa5bc",
+                      "secondary": "#94ccff",
+                      "error-container": "#93000a",
+                      "primary-fixed": "#b3ebff",
+                      "surface-tint": "#4cd6fb",
+                      "on-primary-fixed-variant": "#004e5f",
+                      "on-tertiary-container": "#303b4e",
+                      "on-background": "#d4e4fa",
+                      "error": "#ffb4ab",
+                      "secondary-fixed-dim": "#94ccff",
+                      "secondary-container": "#0378b7",
+                      "surface-container": "#122131",
+                      "on-error": "#690005",
+                      "background": "#051424",
+                      "tertiary-fixed": "#d8e3fb",
+                      "surface-container-high": "#1c2b3c",
+                      "surface-bright": "#2c3a4c",
+                      "on-secondary-container": "#f5f8ff",
+                      "surface-container-highest": "#273647",
+                      "primary-container": "#00b4d8",
+                      "on-secondary-fixed": "#001d32",
+                      "tertiary-fixed-dim": "#bcc7de",
+                      "on-tertiary": "#263143"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-desktop": "32px",
+                      "container-max-width": "1440px",
+                      "unit": "4px",
+                      "margin-mobile": "16px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "headline-xl": [
+                              "Inter", "sans-serif"
+                      ],
+                      "headline-lg": [
+                              "Inter", "sans-serif"
+                      ],
+                      "body-md": [
+                              "Inter", "sans-serif"
+                      ],
+                      "label-caps": [
+                              "Inter", "sans-serif"
+                      ],
+                      "body-sm": [
+                              "Inter", "sans-serif"
+                      ],
+                      "technical-data": [
+                              "Inter", "sans-serif"
+                      ],
+                      "headline-md": [
+                              "Inter", "sans-serif"
+                      ],
+                      "body-lg": [
+                              "Inter", "sans-serif"
+                      ]
+              },
+              "fontSize": {
+                      "headline-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.08em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "technical-data": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background-color: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .critical-pulse {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 180, 171, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 180, 171, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 180, 171, 0); }
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background h-screen overflow-hidden flex font-body-md">
+<!-- SideNavBar -->
+<nav class="hidden md:flex bg-surface dark:bg-surface text-primary font-label-caps text-label-caps h-screen w-20 flex-col border-r border-outline-variant fixed left-0 top-0 z-50 items-center py-margin-desktop">
+<div class="mb-12 flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-4xl font-headline-md text-headline-md font-bold text-primary mb-2">water_drop</span>
+</div>
+<div class="flex flex-col w-full items-center space-y-6 flex-grow">
+<!-- Dashboard -->
+<a class="text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors w-16 h-16 flex flex-col items-center justify-center rounded-lg group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform">dashboard</span>
+<span class="text-[10px]">Dashboard</span>
+</a>
+<!-- Scenario -->
+<a class="text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors w-16 h-16 flex flex-col items-center justify-center rounded-lg group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform">settings_suggest</span>
+<span class="text-[10px]">Scenario</span>
+</a>
+<!-- Simulation -->
+<a class="text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors w-16 h-16 flex flex-col items-center justify-center rounded-lg group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform">analytics</span>
+<span class="text-[10px]">Simulation</span>
+</a>
+<!-- Results -->
+<a class="text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors w-16 h-16 flex flex-col items-center justify-center rounded-lg group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform">assessment</span>
+<span class="text-[10px]">Results</span>
+</a>
+<!-- Emergency (ACTIVE) -->
+<a class="text-primary bg-primary-container/10 border-r-2 border-primary hover:bg-surface-variant transition-colors w-full h-16 flex flex-col items-center justify-center active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">emergency</span>
+<span class="text-[10px]">Emergency</span>
+</a>
+<!-- Data/Layers -->
+<a class="text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors w-16 h-16 flex flex-col items-center justify-center rounded-lg group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform">layers</span>
+<span class="text-[10px]">Data/Layers</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar -->
+<header class="hidden md:flex bg-surface/80 backdrop-blur-md text-primary font-technical-data text-technical-data fixed top-0 right-0 left-20 z-40 justify-between items-center px-margin-desktop h-16 border-b border-outline-variant">
+<div class="flex items-center space-x-8">
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">Hydro_Pulse</h1>
+<nav class="flex space-x-6">
+<a class="text-on-surface-variant hover:text-primary transition-colors py-5" href="#">Current Project</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors py-5" href="#">Selected Dam</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors py-5" href="#">Simulation Status</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors py-5" href="#">System Health</a>
+</nav>
+</div>
+<div class="flex items-center space-x-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area (Infinite Canvas Map Layout) -->
+<main class="ml-0 md:ml-20 mt-0 md:mt-16 w-full h-[calc(100vh-64px)] relative flex bg-surface-container-lowest">
+<!-- Base Map Layer -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center opacity-70" data-alt="High-resolution, top-down satellite geospatial map of a river valley region, shown in dark mode with deep navy blues and muted slate greys. Neon teal grid lines overlay the terrain. The aesthetic is highly technical, precise, and mission-critical." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDmV8GIR5eV26_WNVzCZ-kj6OiihgKNmXo8OP-JLwviZ7QSzGkzBG4U7ZBcxpkYRk-W9H3NgfgMjH6vRfVPuXg_Br1Rl0F_X2UN9sKQwADuR-QqhKgMNPpovCDzccrJWboJkPHZo78_md_Ssm1Oz-e-rZfZ01g-YypoclpIXuJSKEUtOznTQ78M4jH9TKNMzXBziWmRbB4E4WnyKLArYhht8zjdiKYLIzri5FgO2IbAFTVmAGbs1JE4')"></div>
+<!-- Simulated Flood Overlay -->
+<div class="absolute inset-0 bg-blue-500/20 mix-blend-overlay"></div>
+<!-- Map Markers / Risk Nodes -->
+<div class="absolute top-[30%] left-[45%] flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2 z-10">
+<div class="w-4 h-4 bg-error rounded-full critical-pulse border-2 border-on-error"></div>
+<span class="font-label-caps text-label-caps bg-surface-container-high px-2 py-1 rounded mt-1 border border-outline-variant">Village A (T-2H)</span>
+</div>
+<div class="absolute top-[55%] left-[60%] flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2 z-10">
+<div class="w-4 h-4 bg-orange-400 rounded-full border-2 border-orange-900"></div>
+<span class="font-label-caps text-label-caps bg-surface-container-high px-2 py-1 rounded mt-1 border border-outline-variant">Village B (T-4H)</span>
+</div>
+<div class="absolute top-[70%] left-[30%] flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2 z-10">
+<div class="w-4 h-4 bg-yellow-400 rounded-full border-2 border-yellow-900"></div>
+<span class="font-label-caps text-label-caps bg-surface-container-high px-2 py-1 rounded mt-1 border border-outline-variant">Village C (T-8H)</span>
+</div>
+</div>
+<!-- Floating UI Panels Container -->
+<div class="relative w-full h-full p-4 pointer-events-none z-20 flex justify-between">
+<!-- Left Side: Map Controls & Layers -->
+<div class="pointer-events-auto flex flex-col space-y-4 w-64">
+<div class="glass-panel border border-outline-variant rounded-lg p-4 shadow-lg">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant mb-4 border-b border-outline-variant pb-2">Active Layers</h2>
+<div class="space-y-3 font-technical-data text-technical-data">
+<label class="flex items-center space-x-3 cursor-pointer">
+<input checked="" class="form-checkbox rounded bg-surface border-outline text-primary focus:ring-primary focus:ring-offset-surface" type="checkbox"/>
+<span>Settlements</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer">
+<input checked="" class="form-checkbox rounded bg-surface border-outline text-primary focus:ring-primary focus:ring-offset-surface" type="checkbox"/>
+<span>Hospitals / Medical</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer">
+<input checked="" class="form-checkbox rounded bg-surface border-outline text-primary focus:ring-primary focus:ring-offset-surface" type="checkbox"/>
+<span>Road Infrastructure</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer">
+<input class="form-checkbox rounded bg-surface border-outline text-primary focus:ring-primary focus:ring-offset-surface" type="checkbox"/>
+<span class="text-on-surface-variant">Evacuation Routes</span>
+</label>
+</div>
+</div>
+<div class="glass-panel border border-outline-variant rounded-lg p-2 shadow-lg flex flex-col items-center space-y-2 w-12">
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-variant text-on-surface transition-colors" title="Zoom In">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+<div class="h-px w-6 bg-outline-variant"></div>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-variant text-on-surface transition-colors" title="Zoom Out">
+<span class="material-symbols-outlined text-[20px]">remove</span>
+</button>
+<div class="h-px w-6 bg-outline-variant"></div>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-variant text-on-surface transition-colors" title="Reset View">
+<span class="material-symbols-outlined text-[20px]">my_location</span>
+</button>
+</div>
+</div>
+<!-- Right Side: Analytics & Action Panels -->
+<div class="pointer-events-auto flex flex-col space-y-4 w-96 h-full overflow-y-auto pr-2 custom-scrollbar">
+<!-- Impact Summary Bento -->
+<div class="glass-panel border border-outline-variant rounded-lg p-4 shadow-lg">
+<div class="flex justify-between items-center mb-4 border-b border-outline-variant pb-2">
+<h2 class="font-label-caps text-label-caps text-error flex items-center">
+<span class="material-symbols-outlined text-[16px] mr-1">warning</span>
+                            Impact Summary
+                        </h2>
+<span class="font-technical-data text-technical-data text-on-surface-variant">Sim: T+12h</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-4"><div class="bg-surface-container p-3 rounded border border-outline-variant/50"><div class="font-label-caps text-label-caps text-on-surface-variant mb-1">Affected Pop.</div><div class="font-headline-md text-headline-md text-on-surface">8,420</div></div><div class="bg-surface-container p-3 rounded border border-outline-variant/50"><div class="font-label-caps text-label-caps text-on-surface-variant mb-1">Est. Damages</div><div class="font-headline-md text-headline-md text-on-surface">$18.2M</div></div></div>
+<div class="space-y-2"><div class="flex justify-between items-center p-2 bg-surface-container-lowest rounded border border-outline-variant/30"><div class="flex items-center font-technical-data text-technical-data text-on-surface"><span class="material-symbols-outlined text-[16px] mr-2 text-primary">local_hospital</span>District Hospital</div><span class="font-body-md text-body-md text-error font-bold">AT RISK</span></div><div class="flex justify-between items-center p-2 bg-surface-container-lowest rounded border border-outline-variant/30"><div class="flex items-center font-technical-data text-technical-data text-on-surface"><span class="material-symbols-outlined text-[16px] mr-2 text-primary">school</span>Primary School</div><span class="font-body-md text-body-md text-orange-400 font-bold">FLOODED</span></div><div class="flex justify-between items-center p-2 bg-surface-container-lowest rounded border border-outline-variant/30"><div class="flex items-center font-technical-data text-technical-data text-on-surface"><span class="material-symbols-outlined text-[16px] mr-2 text-primary">engineering</span>Bridge 01</div><span class="font-body-md text-body-md text-error font-bold">CRITICAL</span></div></div>
+</div>
+<!-- Risk Assessment Table -->
+<div class="glass-panel border border-error/50 rounded-lg p-0 shadow-lg overflow-hidden flex-grow flex flex-col">
+<div class="bg-error-container/20 p-4 border-b border-error/30">
+<h2 class="font-label-caps text-label-caps text-error">Critical Settlements Risk Matrix</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high border-b border-outline-variant">
+<th class="p-3 font-label-caps text-label-caps text-on-surface-variant">Location</th>
+<th class="p-3 font-label-caps text-label-caps text-on-surface-variant">Risk Level</th>
+<th class="p-3 font-label-caps text-label-caps text-on-surface-variant">Arrival Time</th>
+</tr>
+</thead>
+<tbody class="font-technical-data text-technical-data">
+<tr class="border-b border-outline-variant/50 bg-error-container/10 hover:bg-surface-variant transition-colors">
+<td class="p-3 text-on-surface">Village A</td>
+<td class="p-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-error/20 text-error border border-error/50">
+<span class="w-1.5 h-1.5 rounded-full bg-error mr-1"></span> CRITICAL
+                                        </span>
+</td>
+<td class="p-3 text-error font-bold">T-2 Hours</td>
+</tr>
+<tr class="border-b border-outline-variant/50 hover:bg-surface-variant transition-colors">
+<td class="p-3 text-on-surface">Village B</td>
+<td class="p-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-500/20 text-orange-400 border border-orange-500/50">
+<span class="w-1.5 h-1.5 rounded-full bg-orange-400 mr-1"></span> HIGH
+                                        </span>
+</td>
+<td class="p-3 text-on-surface-variant">T-4 Hours</td>
+</tr>
+<tr class="hover:bg-surface-variant transition-colors">
+<td class="p-3 text-on-surface">Village C</td>
+<td class="p-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-500/20 text-yellow-400 border border-yellow-500/50">
+<span class="w-1.5 h-1.5 rounded-full bg-yellow-400 mr-1"></span> MODERATE
+                                        </span>
+</td>
+<td class="p-3 text-on-surface-variant">T-8 Hours</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full bg-error hover:bg-error-container text-on-error font-label-caps text-label-caps py-4 px-6 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition-colors border border-red-900"><span class="material-symbols-outlined text-[18px]">summarize</span><span>GENERATE RESPONSE SUMMARY</span></button>
+</div>
+</div>
+</main>
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #3d494d;
+            border-radius: 4px;
+        }
+    </style>
+</body></html>

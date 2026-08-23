@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hydro_Pulse - Dam-Break Scenario Builder</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#004b74",
+                      "surface-variant": "#273647",
+                      "tertiary": "#bcc7de",
+                      "on-primary-fixed": "#001f27",
+                      "primary": "#4cd6fb",
+                      "surface-container-low": "#0d1c2d",
+                      "on-primary-container": "#00414f",
+                      "outline-variant": "#3d494d",
+                      "surface-container-lowest": "#010f1f",
+                      "primary-fixed-dim": "#4cd6fb",
+                      "outline": "#869398",
+                      "on-tertiary-fixed-variant": "#3c475a",
+                      "secondary-fixed": "#cde5ff",
+                      "inverse-surface": "#d4e4fa",
+                      "surface": "#051424",
+                      "on-primary": "#003642",
+                      "on-error-container": "#ffdad6",
+                      "inverse-on-surface": "#233143",
+                      "on-tertiary-fixed": "#111c2d",
+                      "on-surface": "#d4e4fa",
+                      "surface-dim": "#051424",
+                      "on-surface-variant": "#bcc9ce",
+                      "on-secondary": "#003352",
+                      "inverse-primary": "#00677d",
+                      "tertiary-container": "#9aa5bc",
+                      "secondary": "#94ccff",
+                      "error-container": "#93000a",
+                      "primary-fixed": "#b3ebff",
+                      "surface-tint": "#4cd6fb",
+                      "on-primary-fixed-variant": "#004e5f",
+                      "on-tertiary-container": "#303b4e",
+                      "on-background": "#d4e4fa",
+                      "error": "#ffb4ab",
+                      "secondary-fixed-dim": "#94ccff",
+                      "secondary-container": "#0378b7",
+                      "surface-container": "#122131",
+                      "on-error": "#690005",
+                      "background": "#051424",
+                      "tertiary-fixed": "#d8e3fb",
+                      "surface-container-high": "#1c2b3c",
+                      "surface-bright": "#2c3a4c",
+                      "on-secondary-container": "#f5f8ff",
+                      "surface-container-highest": "#273647",
+                      "primary-container": "#00b4d8",
+                      "on-secondary-fixed": "#001d32",
+                      "tertiary-fixed-dim": "#bcc7de",
+                      "on-tertiary": "#263143"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-desktop": "32px",
+                      "container-max-width": "1440px",
+                      "unit": "4px",
+                      "margin-mobile": "16px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "headline-xl": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "technical-data": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "technical-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Form Inputs */
+        .technical-input {
+            @apply w-full bg-surface-container-lowest border border-outline-variant rounded-DEFAULT px-3 py-2 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors font-technical-data text-technical-data;
+        }
+        
+        .input-label {
+            @apply block mb-1 font-label-caps text-label-caps text-on-surface-variant uppercase;
+        }
+        
+        /* Custom Scrollbar for technical panels */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface-container-lowest'); 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.surface-variant'); 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline-variant'); 
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="h-screen w-20 flex flex-col border-r border-outline-variant bg-surface dark:bg-surface fixed left-0 top-0 z-50 py-margin-desktop items-center">
+<!-- Brand Logo -->
+<div class="mb-8 flex flex-col items-center">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(76,214,251,0.3)]">
+<span class="material-symbols-outlined text-on-primary-container font-bold" data-weight="fill" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<ul class="flex flex-col gap-4 w-full">
+<li class="w-full flex justify-center relative group">
+<a class="w-14 h-14 flex flex-col items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+</a>
+</li>
+<li class="w-full flex justify-center relative group">
+<!-- ACTIVE STATE -->
+<a class="w-14 h-14 flex flex-col items-center justify-center rounded-xl text-primary bg-primary-container/10 border-r-2 border-primary Active: scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1 text-primary">settings_suggest</span>
+</a>
+</li>
+<li class="w-full flex justify-center relative group">
+<a class="w-14 h-14 flex flex-col items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">analytics</span>
+</a>
+</li>
+<li class="w-full flex justify-center relative group">
+<a class="w-14 h-14 flex flex-col items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">assessment</span>
+</a>
+</li>
+<li class="w-full flex justify-center relative group">
+<a class="w-14 h-14 flex flex-col items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">emergency</span>
+</a>
+</li>
+<li class="w-full flex justify-center relative group">
+<a class="w-14 h-14 flex flex-col items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">layers</span>
+</a>
+</li>
+</ul>
+<!-- Bottom Actions -->
+<div class="mt-auto flex flex-col gap-4 w-full">
+<a class="w-full flex justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+</a>
+<a class="w-full flex justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-20 z-40 flex justify-between items-center px-margin-desktop h-16 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center">
+<h1 class="font-headline-md text-headline-md text-primary mr-8 tracking-tight">Hydro_Pulse</h1>
+<nav class="hidden md:flex space-x-6">
+<a class="font-technical-data text-technical-data text-on-surface-variant hover:text-primary transition-colors py-5" href="#">Current Project</a>
+<!-- ACTIVE TAB -->
+<a class="font-technical-data text-technical-data text-primary font-bold border-b-2 border-primary py-5" href="#">Selected Dam</a>
+<a class="font-technical-data text-technical-data text-on-surface-variant hover:text-primary transition-colors py-5" href="#">Simulation Status</a>
+<a class="font-technical-data text-technical-data text-on-surface-variant hover:text-primary transition-colors py-5" href="#">System Health</a>
+</nav>
+</div>
+<div class="flex items-center space-x-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-highest border border-outline-variant rounded-full cursor-pointer hover:border-primary transition-colors"><div class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(76,214,251,0.8)]"></div><span class="font-label-caps text-label-caps text-on-surface">PROTOTYPE MODE</span></div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-20 mt-16 p-6 w-full h-[calc(100vh-64px)] flex gap-6">
+<!-- LEFT: Configuration Panel -->
+<section class="w-[450px] flex-shrink-0 bg-surface-container border border-outline-variant rounded-lg flex flex-col h-full overflow-hidden shadow-2xl relative">
+<!-- Decorative header accent -->
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
+<div class="p-5 border-b border-outline-variant bg-surface-container-high flex justify-between items-center z-10">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface m-0 leading-tight">Scenario Builder</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Configure structural failure parameters</p>
+</div>
+<div class="bg-surface-variant p-2 rounded-DEFAULT border border-outline-variant">
+<span class="material-symbols-outlined text-tertiary">settings_applications</span>
+</div>
+</div>
+<div class="p-5 overflow-y-auto flex-1 space-y-6">
+<!-- Dam Configuration -->
+<div class="space-y-4">
+<div class="flex items-center gap-2 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-primary text-[18px]">architecture</span>
+<h3 class="font-technical-data text-technical-data text-primary uppercase tracking-wider">Dam Parameters</h3>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<div>
+<label class="input-label">Dam Name / Identifier</label>
+<input class="technical-input" type="text" value="Demo Dam"/>
+</div>
+<div>
+<label class="input-label">Geospatial Location (Lat/Long)</label>
+<div class="relative">
+<input class="technical-input pr-8" type="text" value="Demo Site - Sector 01"/>
+<span class="material-symbols-outlined absolute right-2 top-2 text-on-surface-variant text-[18px] pointer-events-none">my_location</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Reservoir Conditions -->
+<div class="space-y-4">
+<div class="flex items-center gap-2 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">water</span>
+<h3 class="font-technical-data text-technical-data text-secondary uppercase tracking-wider">Reservoir Conditions</h3>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="input-label">Water Level (m)</label>
+<input class="technical-input" step="0.1" type="number" value="372.5"/>
+</div>
+<div>
+<label class="input-label">Capacity (Mm³)</label>
+<input class="technical-input" type="number" value="35200"/>
+</div>
+</div>
+</div>
+<!-- Breach Parameters -->
+<div class="space-y-4 bg-surface-container-lowest p-4 rounded-lg border border-outline-variant border-l-4 border-l-error">
+<div class="flex items-center gap-2 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-error text-[18px]">broken_image</span>
+<h3 class="font-technical-data text-technical-data text-error uppercase tracking-wider">Breach Mechanics</h3>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<div>
+<label class="input-label">Failure Mode</label>
+<select class="technical-input appearance-none">
+<option>Overtopping (Gradual)</option>
+<option selected="">Piping (Internal Erosion)</option>
+<option>Seismic (Instantaneous)</option>
+<option>Structural Collapse</option>
+</select>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="input-label">Final Width (m)</label>
+<input class="technical-input" type="number" value="150"/>
+</div>
+<div>
+<label class="input-label">Final Depth (m)</label>
+<input class="technical-input" type="number" value="85"/>
+</div>
+</div>
+<div>
+<label class="input-label">Formation Time (hrs)</label>
+<div class="flex items-center gap-3">
+<input class="w-full accent-error h-1 bg-surface-variant rounded-full appearance-none" max="24" min="0.1" step="0.1" type="range" value="2.5"/>
+<span class="font-technical-data text-technical-data text-on-surface w-12 text-right border border-outline-variant px-2 py-1 rounded-DEFAULT bg-surface-container-highest">2.5</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Simulation Settings -->
+<div class="space-y-4">
+<div class="flex items-center gap-2 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">timer</span>
+<h3 class="font-technical-data text-technical-data text-tertiary uppercase tracking-wider">Simulation Output</h3>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="input-label">Duration (hrs)</label>
+<input class="technical-input" type="number" value="72"/>
+</div>
+<div>
+<label class="input-label">Output Interval (min)</label>
+<input class="technical-input" type="number" value="15"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Footer -->
+<div class="p-5 border-t border-outline-variant bg-surface-container-high mt-auto z-10">
+<button class="w-full bg-primary-container hover:bg-primary text-on-primary-container font-headline-md text-[18px] py-3 rounded-lg flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(0,180,216,0.3)] hover:shadow-[0_0_25px_rgba(0,180,216,0.5)] transform hover:-translate-y-0.5 active:translate-y-0">
+<span class="material-symbols-outlined" data-weight="fill">play_arrow</span>
+                    RUN SIMULATION
+                </button>
+<div class="text-center mt-3 flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">EST. COMPUTE: 4m 12s</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">NODES: 1.2M</span>
+</div>
+</div>
+</section>
+<!-- RIGHT: Interactive Map Canvas -->
+<section class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-lg relative overflow-hidden flex flex-col">
+<!-- Map Overlay Controls -->
+<div class="absolute top-4 left-4 z-20 bg-surface-container-high/90 backdrop-blur-md border border-outline-variant rounded-lg p-2 flex flex-col gap-2 shadow-lg">
+<button class="w-10 h-10 rounded-DEFAULT bg-surface hover:bg-surface-variant text-on-surface border border-outline-variant flex items-center justify-center transition-colors" title="Zoom In">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="w-10 h-10 rounded-DEFAULT bg-surface hover:bg-surface-variant text-on-surface border border-outline-variant flex items-center justify-center transition-colors" title="Zoom Out">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<div class="h-px bg-outline-variant w-full my-1"></div>
+<button class="w-10 h-10 rounded-DEFAULT bg-surface hover:bg-surface-variant text-primary border border-outline-variant flex items-center justify-center transition-colors" title="Center on Breach">
+<span class="material-symbols-outlined">my_location</span>
+</button>
+<button class="w-10 h-10 rounded-DEFAULT bg-surface hover:bg-surface-variant text-secondary border border-outline-variant flex items-center justify-center transition-colors" title="Toggle Terrain Layers">
+<span class="material-symbols-outlined">layers</span>
+</button>
+</div>
+<!-- Map Info Panel -->
+<div class="absolute top-4 right-4 z-20 bg-surface-container-high/90 backdrop-blur-md border border-outline-variant rounded-lg p-4 w-64 shadow-lg">
+<h4 class="font-technical-data text-technical-data text-on-surface mb-2 border-b border-outline-variant pb-1">Geospatial Context</h4>
+<div class="space-y-2 mt-2">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">ELEVATION</span>
+<span class="font-technical-data text-technical-data text-on-surface">380m ASL</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">TERRAIN</span>
+<span class="font-technical-data text-technical-data text-on-surface">Canyon / Arid</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">DATA RES.</span>
+<span class="font-technical-data text-technical-data text-primary">5m DEM</span>
+</div>
+</div>
+</div>
+<!-- The Map Itself (Placeholder for GIS Canvas) -->
+<div class="w-full h-full relative" data-location="Demo Dam" style="">
+<div class="bg-cover bg-center w-full h-full opacity-60 mix-blend-luminosity" data-alt="A highly detailed, technical top-down satellite view of a large concrete arch-gravity dam situated in a deep, arid canyon. The water behind the dam is deep blue, while the surrounding terrain consists of rugged, rocky cliffs in muted earth tones. The image should look like a professional GIS interface in dark mode, with a moody, scientific aesthetic. High contrast, precise edges." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBsv4Yd7vFEnjyGaS3G7yAJziaABD6iq16whcNLW4ADPuAP4ddyPmXkw4FHmzyE26jllCGjTJfAPQTDSk6ErZP0vvqqDhT_wH3YOnWQdDJtposqgw6wVS2Cpe-1LMX9PblMmQMegr9yg7d9WJjjb5HYcZbUtehzg6N16gKIdsu9kOvUI3HHmlDzb1kFX07byiigup8N2oT-ybnqS2uuL8lLlG-nCYihR_TYAMaDFFXxofiwj68EW3Wk')"></div>
+<!-- GIS Overlay Graphics -->
+<!-- Grid Lines -->
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6bTM5IDM5VjFoLTM4djM4aDM4eiIgZmlsbD0iIzFFMjkzQiIgZmlsbC1vcGFjaXR5PSIwLjMiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==')] pointer-events-none opacity-40"></div>
+<!-- Breach Target Reticle -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 flex flex-col items-center justify-center">
+<div class="w-24 h-24 border-2 border-error rounded-full relative animate-[spin_10s_linear_infinite]">
+<div class="absolute top-0 left-1/2 w-1 h-3 bg-error transform -translate-x-1/2"></div>
+<div class="absolute bottom-0 left-1/2 w-1 h-3 bg-error transform -translate-x-1/2"></div>
+<div class="absolute left-0 top-1/2 h-1 w-3 bg-error transform -translate-y-1/2"></div>
+<div class="absolute right-0 top-1/2 h-1 w-3 bg-error transform -translate-y-1/2"></div>
+</div>
+<div class="w-4 h-4 bg-error rounded-full absolute shadow-[0_0_15px_rgba(255,180,171,1)]"></div>
+<!-- Projected Outflow Cone (CSS styling approximation) -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 origin-top w-48 h-64 border-l border-r border-dashed border-error/50 bg-gradient-to-b from-error/20 to-transparent clip-path-polygon-[50%_0,100%_100%,0_100%] z-[-1]" style="clip-path: polygon(50% 0, 80% 100%, 20% 100%);"></div>
+<!-- Callout Label -->
+<div class="absolute top-1/2 left-1/2 transform translate-x-16 -translate-y-12 bg-surface-container-high border border-error px-3 py-1.5 rounded-DEFAULT shadow-lg flex items-center gap-2 whitespace-nowrap">
+<div class="w-2 h-2 bg-error rounded-full animate-pulse"></div>
+<span class="font-label-caps text-label-caps text-error">TARGET BREACH LOCATION</span>
+<div class="absolute w-12 h-px bg-error right-full top-1/2"></div>
+</div>
+</div>
+<!-- Scale Indicator -->
+<div class="absolute bottom-4 left-4 z-20 flex items-end">
+<div class="bg-surface-container-high border border-outline-variant px-2 py-1 flex items-center">
+<span class="font-technical-data text-[10px] text-on-surface-variant mr-2">0</span>
+<div class="w-32 h-[3px] bg-outline flex justify-between">
+<div class="w-px h-2 bg-outline -mt-0.5"></div>
+<div class="w-px h-2 bg-outline -mt-0.5"></div>
+<div class="w-px h-2 bg-outline -mt-0.5"></div>
+</div>
+<span class="font-technical-data text-[10px] text-on-surface-variant ml-2">1 km</span>
+</div>
+</div>
+</div>
+<!-- Map Status Bar -->
+<div class="h-8 border-t border-outline-variant bg-surface-container-high flex justify-between items-center px-4">
+<div class="flex items-center gap-4">
+<span class="font-technical-data text-[11px] text-on-surface-variant">CRS: EPSG:4326</span>
+<div class="w-px h-3 bg-outline-variant"></div>
+<span class="font-technical-data text-[11px] text-on-surface-variant flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-primary"></div> SIMULATION PROTOTYPE</span>
+</div>
+<span class="font-technical-data text-[11px] text-on-surface-variant">CURSOR: 0.0000° N, 0.0000° E</span>
+</div>
+</section>
+</main>
+</body></html>
