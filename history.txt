@@ -1,0 +1,210 @@
+    1  hello
+    2  git config --global user.name "pingmesoham-arch"
+    3  git config --global user.email "pingmesoham@gmail.com"
+    4  git config --global --list
+    5  git init
+    6  git status
+    7  git add .
+    8  git config  --global user.name "pingmesoham-arch"
+    9  git config --global user.email "pingmesoham@gmail.com"
+   10  git config --global --list
+   11  git init
+   12  git status 
+   13  git comit -m "Add notes.txt" with initial content"
+   14  clear
+   15  git add notes.txt
+   16  git add notes.txt
+   17  git commit-m "Add notes.txt with initial content"
+   18  git commit -m "Add notes.txt with initial content"
+   19  git commit -am "Update notes.txt with second line"
+   20  git commit -am "Update note.txt with second line"
+   21  git log
+   22  git commit -am "Update notes.txt with second line"
+   23  git status
+   24  git init
+   25  git status
+   26  git add .
+   27  git add notes.txt
+   28  git status
+   29  git config --global --list
+   30  git init
+   31  git status
+   32  git add notes.txt
+   33  git commit -m "Add notes.txt with initial content"
+   34  git commit -am "Update notes.txt with second line"
+   35  git commit -m "Update notes.txt with second line"
+   36  cat notes.txt
+   37  echo "This is the second line" >> notes.txt
+   38  git status
+   39  clear
+   40  rm -rf .git
+   41  rm -f notes.txt
+   42  git status
+   43  pwd
+   44  git rev-parse --show-toplevel
+   45  ls -la
+   46  cd ~
+   47  pwd
+   48  rm -rf .git
+   49  git status
+   50  cd ~/OneDrive/Desktop/git_assignment-
+   51  cd ~/OneDrive/Desktop/git_assignment_
+   52  pwd
+   53  git init
+   54  git status
+   55  echo "My first Git experiment" > notes.txt
+   56  cat notes.txt
+   57  git status
+   58  git init
+   59  git status
+   60  git add notes.txt
+   61  git commit -m "Add notes.txt with initial content"
+   62  echo "This is the second line" >> notes.txt
+   63  cat notes.txt
+   64  git commit -am "Update notes.txt with second line"
+   65  git log
+   66  git remote add origin git@github.com:pingmesoham-arch/Git_Assignment.git
+   67  git remote -v
+   68  git push origin main
+   69  git pull origin main 
+   70  git remote add origin git@github.com:pingmesoham-arch/git_assignment.git
+   71  remote remove origin
+   72  git remote rm origin
+   73  git remote add origin git@github.com:pingmesoham-arch/git_assignment.git
+   74  git remote -v
+   75  git push origin main
+   76  git remote rm origin
+   77  git remote add origin git@github.com:pingmesoham-arch/git_assignment_.git
+   78  git remote -v
+   79  git push origin main
+   80  ls -al ~/.ssh
+   81  ssh-keygen -t ed25519 -C "pingmesoham@gmail.com"
+   82  cat ~/.ssh/id_ed25519.pub
+   83  ssh -T git@github.com
+   84  git push origin main
+   85  git pull origin main --allow-unrelated-histories
+   86  git push origin main
+   87  git pull origin main
+   88  echo "Complete Git assignment" > todo.txt
+   89  cat todo.txt
+   90  git add todo.txt
+   91  git status
+   92  git commit -m "Add todo.txt"
+   93  git push origin main
+   94  clear
+   95  git config --global --list
+   96  git clone https://github.com/Mihir2271/DevOps_Exp2
+   97  echo "Collaborator notes" > collabnotes.txt
+   98  git add collabnotes.txt
+   99  echo "Collaborator notes" > collabnotes.txt
+  100  echo "Collaborator notes" > collab_notes.txt
+  101  git init
+  102  git add .
+  103  git add collab_notes.txt
+  104  git commit -m "Collaborator added a file"
+  105  git push origin main
+  106  git remote origin https://github.com/Mihir2271/DevOps_Exp2
+  107  git git remote add origin https://github.com/Mihir2271/DevOps_Exp2
+  108  git remote add origin https://github.com/Mihir2271/DevOps_Exp2
+  109  git push u origin main
+  110  git push origin main
+  111  git pull origin main
+  112  git push origin main
+  113  git pull
+  114  cd git_advanced
+  115  exit
+  116  git git clone <your-repo-URL>
+  117  cd git_advanced
+  118  echo "Collaborator notes" > collab_notes.txt
+  119  git add collab_notes.txt
+  120  git commit -m "Collaborator added a file"
+  121  git push origin mai
+  122  clear
+  123  git clone https://github.com/Mihir2271/DevOps_Exp2
+  124  cd git_advanced
+  125  cd Devops_Exp2
+  126  git pull origin main
+  127  exit
+  128  git clone [200~git clone https://github.com/Mihir2271/DevOps_Exp2.git~
+  129  clear
+  130  git clone https://github.com/Mihir2271/DevOps_Exp2
+  131  cd Devops_Exp2
+  132  git remote -v
+  133  git status
+  134  echo "This file was added by the collaborator as part of the Git collaboration experiment." > collab_notes.txt
+  135  git add collab_notes.txt
+  136  git commit -m "Collaborator added a file"
+  137  git push origin main 
+  138  exit
+  139  git config --global --list
+  140  git init
+  141  echo "this is notes.txt" > notes.txt
+  142  echo "this is todo.txt" > todo.txt
+  143  git branch
+  144  git branch feature - update
+  145  git checkout feature -update
+  146  git branch feature-update
+  147  git git branch
+  148  git branch
+  149  git branch feature-update
+  150  git status
+  151  git add notes.txt todo.txt
+  152  git commit -m "Initial commit"
+  153  git log --online
+  154  git log --oneline
+  155  git branch feature-update
+  156  git branch
+  157  git checkout feature-update
+  158  git branch 
+  159  git status
+  160  git add notes.txt
+  161  git commmit -m "Updated notes on feature branch"
+  162  git commit -m "Updated notes on feature branch"
+  163  git checkout main
+  164  git status
+  165  git merge feature-update
+  166  git branch -d quick-fix
+  167  echo "This is a temporary change that I will restore." > notes.txt
+  168  git status
+  169  git restore notes.txt
+  170  git status
+  171  git add notes.txt
+  172  git status
+  173  git restore --staged notes.txt
+  174  git status
+  175  git log --oneline
+  176  git restore --source=lbd4a94 notes.txt
+  177  git restore --source=1bd4a94 notes.txt
+  178  git status
+  179  git restore notes.txt
+  180  git status
+  181  git diff
+  182  echo "[200~Complete Git advanced experiment~" > todo.txt
+  183  get diff
+  184  git diff
+  185  git add todo.txt
+  186  git diff --staged
+  187  git blame notes.txt
+  188  git status
+  189  git restore --staged todo.txt
+  190  git status
+  191  git remote-v
+  192  git remote - v
+  193  git remote -v
+  194  git resotre todo.txt
+  195  git restore todo.txt
+  196  git status
+  197  git remote add origin https://github.com/pingmesoham-arch/git_advanced_
+  198  git remote -v
+  199  git push -u origin main
+  200  git pull origin main
+  201  git status
+  202  ls
+  203  git config --global --list
+  204  git init
+  205  git add .
+  206  git commit -m "Initial commit"
+  207  git branch -M main
+  208  git remote add origin https://github.com/pingmesoham-arch/hydro-pulse
+  209  git push -u origin main
+  210  history > history.txt
