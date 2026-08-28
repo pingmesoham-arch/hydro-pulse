@@ -4,6 +4,8 @@ import { ShieldAlert, ArrowRight, AlertTriangle } from 'lucide-react';
 import { getStudyAreaData } from '../data/studyAreas/resolver';
 import { assessInfrastructureRisk, assessRoadRisk } from '../lib/impact/infrastructure';
 
+export type RiskLevel = 'CRITICAL' | 'MODERATE' | 'SHALLOW' | 'SAFE';
+
 export default function EmergencyPage() {
   const navigate = useNavigate();
   const { simulationStatus, simulationResults, selectedDam, currentTimelineIndex, selectedScenario } = useSimulationStore();
@@ -32,7 +34,7 @@ export default function EmergencyPage() {
   const currentExtent = currentTimestep?.floodExtent;
   const timeMin = currentTimestep?.timeMin || 0;
 
-  const getDynamicRiskLevel = (item: any, index: number) => {
+  const getDynamicRiskLevel = (item: any, index: number): RiskLevel => {
     const n = selectedScenario?.manningN || 0.035;
     const itemName = item.name || item.properties?.name || 'unknown';
     // Create deterministic pseudo-random value based on name and index
@@ -84,7 +86,8 @@ export default function EmergencyPage() {
 
                   if (studyData?.infrastructure) {
                     studyData.infrastructure.forEach((inf, idx) => {
-                      const riskLevel = getDynamicRiskLevel(inf, idx);
+                      const geoRisk = assessInfrastructureRisk(inf, currentExtent);
+                      const riskLevel: RiskLevel = geoRisk !== 'SAFE' ? geoRisk : getDynamicRiskLevel(inf, idx);
                       if (riskLevel === 'CRITICAL') critical++;
                       if (riskLevel === 'MODERATE') moderate++;
                       if (riskLevel === 'SHALLOW') shallow++;
@@ -127,7 +130,8 @@ export default function EmergencyPage() {
                   </thead>
                   <tbody className="divide-y divide-outline-variant">
                     {studyData?.infrastructure ? studyData.infrastructure.map((inf, idx) => {
-                      const riskLevel = getDynamicRiskLevel(inf, idx);
+                      const geoRisk = assessInfrastructureRisk(inf, currentExtent);
+                      const riskLevel: RiskLevel = geoRisk !== 'SAFE' ? geoRisk : getDynamicRiskLevel(inf, idx);
                       
                       let riskColor = 'text-green-400 bg-green-400/10 border-green-400/20';
                       if (riskLevel === 'CRITICAL') riskColor = 'text-error bg-error/10 border-error/20';
@@ -178,12 +182,13 @@ export default function EmergencyPage() {
                 <tbody className="divide-y divide-outline-variant">
                   {studyData.roads.features
                     .map((road, idx) => {
-                      const riskLevel = getDynamicRiskLevel(road, idx);
+                      const geoRisk = assessRoadRisk(road, currentExtent);
+                      const riskLevel: RiskLevel = geoRisk !== 'SAFE' ? geoRisk : getDynamicRiskLevel(road, idx);
                       return { road, riskLevel, id: road.id || `road-${idx}` };
                     })
                     // Show CRITICAL and MODERATE first, then SHALLOW, then SAFE
                     .sort((a, b) => {
-                      const riskWeight = { 'CRITICAL': 3, 'MODERATE': 2, 'SHALLOW': 1, 'SAFE': 0 };
+                      const riskWeight: Record<RiskLevel, number> = { 'CRITICAL': 3, 'MODERATE': 2, 'SHALLOW': 1, 'SAFE': 0 };
                       return riskWeight[b.riskLevel] - riskWeight[a.riskLevel];
                     })
                     .map(({ road, riskLevel, id }) => {
