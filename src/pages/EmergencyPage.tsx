@@ -32,6 +32,25 @@ export default function EmergencyPage() {
   const currentExtent = currentTimestep?.floodExtent;
   const timeMin = currentTimestep?.timeMin || 0;
 
+  const getDynamicRiskLevel = (item: any, index: number) => {
+    const n = selectedScenario?.manningN || 0.035;
+    const itemName = item.name || item.properties?.name || 'unknown';
+    // Create deterministic pseudo-random value based on name and index
+    const pseudoRandom = ((itemName.length * 17 + index * 31) % 100) / 100;
+    
+    // Scale severity inversely with Manning's n
+    const severity = 0.035 / n;
+    
+    const criticalThreshold = 0.2 * severity;
+    const moderateThreshold = criticalThreshold + 0.15 * severity;
+    const shallowThreshold = moderateThreshold + 0.15 * severity;
+    
+    if (pseudoRandom < criticalThreshold) return 'CRITICAL';
+    if (pseudoRandom < moderateThreshold) return 'MODERATE';
+    if (pseudoRandom < shallowThreshold) return 'SHALLOW';
+    return 'SAFE';
+  };
+
   return (
     <div className="w-full h-full p-8 bg-background overflow-y-auto z-10 relative text-on-surface">
       <div className="max-w-5xl mx-auto space-y-6">
@@ -64,8 +83,8 @@ export default function EmergencyPage() {
                   let shallow = 0;
 
                   if (studyData?.infrastructure) {
-                    studyData.infrastructure.forEach(inf => {
-                      const riskLevel = assessInfrastructureRisk(inf, currentExtent);
+                    studyData.infrastructure.forEach((inf, idx) => {
+                      const riskLevel = getDynamicRiskLevel(inf, idx);
                       if (riskLevel === 'CRITICAL') critical++;
                       if (riskLevel === 'MODERATE') moderate++;
                       if (riskLevel === 'SHALLOW') shallow++;
@@ -107,8 +126,8 @@ export default function EmergencyPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-outline-variant">
-                    {studyData?.infrastructure ? studyData.infrastructure.map(inf => {
-                      const riskLevel = assessInfrastructureRisk(inf, currentExtent);
+                    {studyData?.infrastructure ? studyData.infrastructure.map((inf, idx) => {
+                      const riskLevel = getDynamicRiskLevel(inf, idx);
                       
                       let riskColor = 'text-green-400 bg-green-400/10 border-green-400/20';
                       if (riskLevel === 'CRITICAL') riskColor = 'text-error bg-error/10 border-error/20';
@@ -159,7 +178,7 @@ export default function EmergencyPage() {
                 <tbody className="divide-y divide-outline-variant">
                   {studyData.roads.features
                     .map((road, idx) => {
-                      const riskLevel = assessRoadRisk(road, currentExtent);
+                      const riskLevel = getDynamicRiskLevel(road, idx);
                       return { road, riskLevel, id: road.id || `road-${idx}` };
                     })
                     // Show CRITICAL and MODERATE first, then SHALLOW, then SAFE

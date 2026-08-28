@@ -30,6 +30,13 @@ This document outlines the version-based development plan for the Smart India Ha
 3. **Screens/components required:** Map Overlays (GeoJSON or raster layers), Time/Playback Controller Component, Map Legend.
 4. **Data required:** Precomputed flood extents and depths for the selected scenarios (e.g., GeoJSON polygons representing the flood at T+1hr, T+2hr, etc.).
 5. **What can be mocked:** The flood data itself. Use pre-generated data from external tools (like HEC-RAS) or manually drawn realistic polygons. No real-time physics computations should occur.
+     **Prototype Simulation Constraints:**
+     Active Variable: The hydrodynamic simulation calculation is currently driven exclusively by Manning's Roughness (n).
+
+     Bypassed Variables: All other scenario parameters (Breach Width, Formation Time, Crest Failure) are visually represented in the UI but are temporarily disabled in the backend calculation logic.
+
+     Expected Output: Prototype simulation results currently reflect single-variable scaling based solely on the roughness coefficient.
+
 6. **What should NOT be implemented yet:** Detailed disaster impact statistics or critical infrastructure overlays.
 7. **Definition of Done:** User clicks "Run Simulation", the map updates with a time slider, and the user can animate the flood wave moving downstream.
 8. **What the judges should be able to understand after seeing it:** How the system will represent the physical flood event spatially and temporally, answering "Where does the water go?".

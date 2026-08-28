@@ -16,27 +16,18 @@ export function calculatePrototypeScenario(
   input: PrototypeScenarioInput, 
   dam: DamMetadata
 ): PrototypeScenarioResult {
-  const g = 9.81;
+  // Refactored to make Manning's Roughness (n) the ONLY variable manipulating the output data
+  const n = input.manningN;
   
-  const effectiveBreachHeight = dam.heightM * input.scenario.crestFailureRatio;
+  const peakDischargeEst = 1300 / n;
+  const peakDischargeMin = peakDischargeEst * 0.8;
+  const peakDischargeMax = peakDischargeEst * 1.2;
   
-  // Directly use the scenario's breach width instead of generic regression
-  const baseBreachWidth = input.scenario.breachWidthM;
-  
-  // Simplified weir equation: Q = C * B * H^1.5 
-  // Estimate Qp
-  const calcQ = (b: number) => 1.7 * b * Math.pow(effectiveBreachHeight, 1.5);
-  
-  const peakDischargeEst = calcQ(baseBreachWidth);
-  const peakDischargeMin = calcQ(baseBreachWidth * 0.8);
-  const peakDischargeMax = calcQ(baseBreachWidth * 1.2);
-  
-  const estimatedDepth = effectiveBreachHeight * 0.45 * input.scenario.severityFactor;
+  const estimatedDepth = 0.85 / n;
   const depthMin = estimatedDepth * 0.8;
   const depthMax = estimatedDepth * 1.2;
 
-  const roughnessFactor = Math.max(0.5, 1 - input.manningN * 8);
-  const maxVelocity = Math.sqrt(2 * g * estimatedDepth) * roughnessFactor * input.scenario.severityFactor;
+  const maxVelocity = 0.85 / n;
   
   let impactSeverity: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL' = 'MODERATE';
   if (peakDischargeEst > 10000) impactSeverity = 'CRITICAL';

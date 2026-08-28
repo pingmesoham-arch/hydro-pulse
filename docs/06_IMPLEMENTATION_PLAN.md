@@ -77,6 +77,7 @@ To simulate the flood without a solver, scenarios will be structured as arrays o
   ]
 }
 ```
+> **Note on Data Scaling:** For this MVP, the frontend logic currently overrides or scales these static `impactMetrics` (like `maxDepth` and `velocity`) based exclusively on the dynamic **Manning's Roughness (n)** input from the UI.
 
 ## 9. State Management
 *   **Library:** `Zustand`. It's lightweight, avoids provider hell, and is perfect for a prototype.
@@ -130,6 +131,7 @@ Critical interfaces required:
 *   Update `GisMap` to plot critical infrastructure markers.
 *   Build the `ResultsDashboard` showing dynamic impact metrics tied to the active scenario and timeline.
 *   Implement the risk matrix table listing affected settlements.
+*   **Developer Reminder:** When wiring up the simulation state, ensure the mathematical output is scaled    strictly by the **Manning's Roughness (n)** variable. Other UI parameters are currently bypassed.
 
 ## 17. Testing Strategy
 Given the hackathon timeframe and MVP scope:

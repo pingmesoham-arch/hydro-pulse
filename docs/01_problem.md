@@ -56,6 +56,11 @@ has been integrated.
 
 The first prototype may use realistic mock/precomputed data.
 
+**Prototype Simulation Constraints:**
+* **Active Variable:** The hydrodynamic simulation calculation is currently driven exclusively by **Manning's Roughness (n)**.
+* **Bypassed Variables:** All other scenario parameters (Breach Width, Formation Time, Crest Failure) are visually represented in the UI but are temporarily disabled in the calculation logic.
+* **Expected Output:** Prototype simulation results currently reflect single-variable scaling based solely on the roughness coefficient.
+
 ## Questions We Still Need To Resolve
 
 - Which river should be used for the prototype?
