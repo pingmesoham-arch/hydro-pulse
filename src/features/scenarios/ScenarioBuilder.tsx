@@ -49,9 +49,8 @@ export default function ScenarioBuilder() {
       manningN: Number(manningN),
       scenario
     };
-    // This now also clears the old prototype result and sets simulationStatus to 'idle' first
+    // Set active scenario configuration
     setSelectedScenario(scenarioInput);
-    // But we are in the middle of a run, so we immediately set it back to computing!
     setSimulationStatus('computing');
 
     setTimeout(() => setProcessingStep(2), 600); // PROCESSING INPUTS

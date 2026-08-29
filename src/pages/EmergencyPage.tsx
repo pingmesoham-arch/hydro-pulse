@@ -1,18 +1,33 @@
 import { useSimulationStore } from '../store/useSimulationStore';
 import { useNavigate } from 'react-router-dom';
-import { ShieldAlert, ArrowRight, AlertTriangle } from 'lucide-react';
+import { 
+  ShieldAlert, 
+  ArrowRight, 
+  AlertTriangle, 
+  Clock, 
+  Waves, 
+  Building2, 
+  Activity, 
+  AlertOctagon,
+  LifeBuoy
+} from 'lucide-react';
 import { fetchInfrastructure, fetchRoads } from '../data/studyAreas/resolver';
 import { assessInfrastructureRisk, assessRoadRisk } from '../lib/impact/infrastructure';
-import { useEffect, useState } from 'react';
+import { 
+  computeEvacuationPriorities, 
+  generateHADRSummary, 
+  computePointArrival 
+} from '../lib/hadr/hadrEngine';
+import { useEffect, useState, useMemo } from 'react';
 import type * as GeoJSON from 'geojson';
-
-export type RiskLevel = 'CRITICAL' | 'MODERATE' | 'SHALLOW' | 'SAFE';
+import clsx from 'clsx';
 
 export default function EmergencyPage() {
   const navigate = useNavigate();
   const { simulationStatus, simulationResults, selectedDam, currentTimelineIndex, selectedScenario } = useSimulationStore();
   const [infrastructure, setInfrastructure] = useState<any[] | null>(null);
   const [roads, setRoads] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [filterPriority, setFilterPriority] = useState<string>('ALL');
 
   useEffect(() => {
     if (selectedDam) {
@@ -21,13 +36,35 @@ export default function EmergencyPage() {
     }
   }, [selectedDam]);
 
+  const summary = useMemo(() => {
+    return generateHADRSummary(
+      simulationResults,
+      currentTimelineIndex,
+      infrastructure,
+      roads
+    );
+  }, [simulationResults, currentTimelineIndex, infrastructure, roads]);
+
+  const evacuationQueue = useMemo(() => {
+    return computeEvacuationPriorities(
+      infrastructure,
+      simulationResults,
+      currentTimelineIndex
+    );
+  }, [infrastructure, simulationResults, currentTimelineIndex]);
+
+  const filteredQueue = useMemo(() => {
+    if (filterPriority === 'ALL') return evacuationQueue;
+    return evacuationQueue.filter(item => item.priority === filterPriority);
+  }, [evacuationQueue, filterPriority]);
+
   if (simulationStatus !== 'ready' || !simulationResults) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-background text-center z-10 relative">
         <div className="bg-surface-container border border-outline-variant p-8 rounded-xl max-w-md w-full">
           <ShieldAlert className="w-12 h-12 text-on-surface-variant mx-auto mb-4 opacity-50" />
           <h2 className="text-xl font-bold text-on-surface mb-2">NO SIMULATION RESULTS</h2>
-          <p className="text-sm text-on-surface-variant mb-6">Run a scenario to view emergency impact assessments.</p>
+          <p className="text-sm text-on-surface-variant mb-6">Run a scenario to view emergency HADR impact assessments and evacuation priorities.</p>
           <button 
             onClick={() => navigate('/scenario')}
             className="w-full bg-primary text-on-primary hover:bg-primary-container font-semibold py-2.5 rounded flex items-center justify-center gap-2 transition-colors"
@@ -40,175 +77,297 @@ export default function EmergencyPage() {
   }
 
   const currentTimestep = simulationResults.timesteps[currentTimelineIndex];
-  const currentImpact = currentTimestep?.impact;
   const currentExtent = currentTimestep?.floodExtent;
   const timeMin = currentTimestep?.timeMin || 0;
 
   return (
     <div className="w-full h-full p-8 bg-background overflow-y-auto z-10 relative text-on-surface">
-      <div className="max-w-5xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6">
         
+        {/* Page Header */}
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-error flex items-center gap-2">
-              <ShieldAlert className="w-6 h-6" /> Prototype Impact Assessment
+              <ShieldAlert className="w-7 h-7" /> HADR Command & Decision Support
             </h1>
-            <p className="text-on-surface-variant text-sm mt-1">Estimated impact on local infrastructure based on prototype hydraulic values.</p>
+            <p className="text-on-surface-variant text-sm mt-1">
+              Real-time multi-criteria impact assessment, flood arrival lead times, and prioritized evacuation triage.
+            </p>
           </div>
           <div className="text-right">
-             <div className="text-xs text-on-surface-variant mb-1 uppercase tracking-widest">{selectedDam?.name} • {selectedScenario?.scenario?.name}</div>
-             <div className="bg-error/10 text-error px-3 py-1.5 rounded font-bold border border-error/20 inline-block">
-               Simulation Time: T+{timeMin} min
+             <div className="text-xs text-on-surface-variant mb-1 uppercase tracking-widest font-mono">
+               {selectedDam?.name} • {selectedScenario?.scenario?.name}
+             </div>
+             <div className="bg-error/10 text-error px-3.5 py-1.5 rounded-lg font-bold border border-error/20 inline-flex items-center gap-2">
+               <Clock className="w-4 h-4 animate-pulse" /> Active Timestep: T+{timeMin} min
              </div>
           </div>
         </div>
 
-        {currentImpact && (
-          <div className="grid grid-cols-3 gap-6 mb-8">
-            <div className="col-span-1 bg-surface-container border border-outline-variant p-5 rounded-lg space-y-4">
-              <h3 className="text-[10px] font-bold tracking-widest text-primary uppercase border-b border-outline-variant pb-2">Critical Infrastructure Exposure</h3>
-              <p className="text-xs text-on-surface-variant">Number of critical assets (hospitals, schools, bridges, etc.) intersected by the flood extent at T+{timeMin} min.</p>
-              
-              <div className="space-y-3 pt-2">
-                {(() => {
-                  let critical = 0;
-                  let moderate = 0;
-                  let shallow = 0;
-
-                  if (infrastructure) {
-                    infrastructure.forEach((inf) => {
-                      const riskLevel: RiskLevel = assessInfrastructureRisk(inf, currentExtent);
-                      if (riskLevel === 'CRITICAL') critical++;
-                      if (riskLevel === 'MODERATE') moderate++;
-                      if (riskLevel === 'SHALLOW') shallow++;
-                    });
-                  }
-
-                  return (
-                    <>
-                      <div>
-                        <div className="text-[10px] text-error uppercase mb-1 font-semibold">Critical Zone</div>
-                        <div className="text-xl font-mono text-on-surface">{critical} Assets</div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] text-orange-400 uppercase mb-1 font-semibold">Moderate Zone</div>
-                        <div className="text-xl font-mono text-on-surface">{moderate} Assets</div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] text-yellow-400 uppercase mb-1 font-semibold">Shallow Zone</div>
-                        <div className="text-xl font-mono text-on-surface">{shallow} Assets</div>
-                      </div>
-                    </>
-                  );
-                })()}
-              </div>
+        {/* HADR Situational Summary Cards */}
+        <div className="grid grid-cols-4 gap-4">
+          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg">
+            <div className="flex items-center justify-between text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">
+              <span>Inundated Surface</span>
+              <Waves className="w-4 h-4 text-cyan-400" />
             </div>
+            <div className="text-2xl font-mono font-bold text-on-surface">{summary.inundatedAreaKm2} <span className="text-xs font-normal">km²</span></div>
+            <div className="text-[10px] text-on-surface-variant mt-1">At T+{timeMin} min extent</div>
+          </div>
 
-            <div className="col-span-2 bg-surface-container border border-outline-variant rounded-lg overflow-hidden flex flex-col">
-              <div className="p-5 border-b border-outline-variant bg-surface-container-highest">
-                <h3 className="text-[10px] font-bold tracking-widest text-primary uppercase">Infrastructure Risk at T+{timeMin} min</h3>
-              </div>
-              <div className="overflow-y-auto flex-1">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-surface-container-highest border-b border-outline-variant text-[10px] font-bold tracking-widest text-on-surface-variant uppercase sticky top-0">
-                    <tr>
-                      <th className="px-6 py-3">Infrastructure Name</th>
-                      <th className="px-6 py-3">Type</th>
-                      <th className="px-6 py-3">Elevation</th>
-                      <th className="px-6 py-3">Est. Risk Level</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-outline-variant">
-                    {infrastructure ? infrastructure.map((inf) => {
-                      const riskLevel: RiskLevel = assessInfrastructureRisk(inf, currentExtent);
-                      
-                      let riskColor = 'text-green-400 bg-green-400/10 border-green-400/20';
-                      if (riskLevel === 'CRITICAL') riskColor = 'text-error bg-error/10 border-error/20';
-                      if (riskLevel === 'MODERATE') riskColor = 'text-orange-400 bg-orange-400/10 border-orange-400/20';
-                      if (riskLevel === 'SHALLOW') riskColor = 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20';
+          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg">
+            <div className="flex items-center justify-between text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">
+              <span>Earliest Arrival</span>
+              <Clock className="w-4 h-4 text-primary" />
+            </div>
+            <div className="text-2xl font-mono font-bold text-primary">
+              {summary.earliestArrivalMin !== null ? `T+${summary.earliestArrivalMin} min` : 'None'}
+            </div>
+            <div className="text-[10px] text-on-surface-variant mt-1">First downstream impact</div>
+          </div>
 
-                      return (
-                        <tr key={inf.id} className="hover:bg-surface-container-highest/50 transition-colors">
-                          <td className="px-6 py-3 font-medium">{inf.name}</td>
-                          <td className="px-6 py-3 capitalize text-on-surface-variant">{inf.type}</td>
-                          <td className="px-6 py-3 font-mono">{inf.elevationM} m</td>
-                          <td className="px-6 py-3">
-                            <span className={`px-2 py-1 rounded text-[10px] font-bold border ${riskColor}`}>
-                              {riskLevel}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    }) : (
-                      <tr>
-                        <td colSpan={4} className="px-6 py-8 text-center text-on-surface-variant text-sm">
-                          Reference infrastructure dataset unavailable for this study area.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg">
+            <div className="flex items-center justify-between text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">
+              <span>Critical Facilities</span>
+              <Building2 className="w-4 h-4 text-orange-400" />
+            </div>
+            <div className="text-2xl font-mono font-bold text-on-surface">
+              {summary.hospitalsAffected + summary.schoolsAffected + summary.bridgesAffected}
+            </div>
+            <div className="text-[10px] text-on-surface-variant mt-1">
+              {summary.hospitalsAffected} Hosp • {summary.schoolsAffected} Sch • {summary.bridgesAffected} Brg
             </div>
           </div>
-        )}
 
-        {roads && currentExtent && (
-          <div className="bg-surface-container border border-outline-variant rounded-lg flex flex-col max-h-96 mb-8">
-            <div className="p-4 border-b border-outline-variant flex justify-between items-center bg-surface shrink-0 rounded-t-lg">
-              <h3 className="text-[10px] font-bold tracking-widest text-primary uppercase">Critical Transport Network Impact</h3>
-              <div className="text-xs text-on-surface-variant">OSM Reference Features</div>
+          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg">
+            <div className="flex items-center justify-between text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">
+              <span>Transport Network</span>
+              <AlertOctagon className="w-4 h-4 text-error" />
+            </div>
+            <div className="text-2xl font-mono font-bold text-on-surface">
+              {summary.roadsAffected} <span className="text-xs font-normal">segments</span>
+            </div>
+            <div className="text-[10px] text-on-surface-variant mt-1">
+              ~{summary.estimatedAffectedRoadLengthKm} km cut off
+            </div>
+          </div>
+        </div>
+
+        {/* Evacuation Priority Queue */}
+        <div className="bg-surface-container border border-outline-variant rounded-xl overflow-hidden shadow-lg">
+          <div className="p-5 border-b border-outline-variant bg-surface-container-highest flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-error/10 border border-error/20 text-error">
+                <LifeBuoy className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-sm font-bold tracking-tight text-on-surface uppercase">
+                  Prioritized Evacuation & HADR Rescue Queue
+                </h2>
+                <p className="text-xs text-on-surface-variant">
+                  Ranked by composite HADR risk score, arrival lead time, and infrastructure vulnerability.
+                </p>
+              </div>
+            </div>
+
+            {/* Filter Buttons */}
+            <div className="flex items-center gap-1 bg-surface-container p-1 rounded-lg border border-outline-variant text-xs">
+              {['ALL', 'CRITICAL', 'HIGH', 'MODERATE'].map(p => (
+                <button
+                  key={p}
+                  onClick={() => setFilterPriority(p)}
+                  className={clsx(
+                    "px-3 py-1 rounded-md text-[10px] font-bold transition-colors",
+                    filterPriority === p 
+                      ? "bg-primary text-on-primary shadow-sm" 
+                      : "text-on-surface-variant hover:text-on-surface"
+                  )}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="overflow-x-auto max-h-[380px] overflow-y-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-surface-container-highest border-b border-outline-variant text-[10px] font-bold tracking-widest text-on-surface-variant uppercase sticky top-0 z-10">
+                <tr>
+                  <th className="px-5 py-3">Rank</th>
+                  <th className="px-5 py-3">Facility / Settlement</th>
+                  <th className="px-5 py-3">Type</th>
+                  <th className="px-5 py-3">Flood Arrival</th>
+                  <th className="px-5 py-3">Peak Depth</th>
+                  <th className="px-5 py-3">HADR Risk</th>
+                  <th className="px-5 py-3">Priority Action Directive</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-outline-variant">
+                {filteredQueue.length > 0 ? (
+                  filteredQueue.map((item, idx) => {
+                    let badgeColor = 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30';
+                    if (item.priority === 'CRITICAL') badgeColor = 'bg-error/10 text-error border-error/30';
+                    else if (item.priority === 'HIGH') badgeColor = 'bg-orange-500/10 text-orange-400 border-orange-500/30';
+
+                    return (
+                      <tr key={item.id} className="hover:bg-surface-container-highest/40 transition-colors">
+                        <td className="px-5 py-3 font-mono font-bold text-xs text-on-surface-variant">#{idx + 1}</td>
+                        <td className="px-5 py-3 font-semibold text-on-surface">{item.name}</td>
+                        <td className="px-5 py-3 capitalize text-xs text-on-surface-variant">{item.type}</td>
+                        <td className="px-5 py-3 font-mono font-bold text-primary text-xs">
+                          {item.arrivalTimeMin !== null ? `T+${item.arrivalTimeMin} min` : 'Unflooded'}
+                        </td>
+                        <td className="px-5 py-3 font-mono text-xs">{item.peakDepthM} m</td>
+                        <td className="px-5 py-3">
+                          <span className={clsx("px-2.5 py-1 rounded text-[10px] font-bold border", badgeColor)}>
+                            {item.riskScore.score} • {item.priority}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3 text-xs text-on-surface leading-snug">
+                          {item.actionDirective}
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-8 text-center text-on-surface-variant text-sm">
+                      No assets match the active priority filter in this scenario extent.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Transport Corridors & OSM Asset Matrix */}
+        <div className="grid grid-cols-2 gap-6">
+          
+          {/* Critical Infrastructure Exposure Table */}
+          <div className="bg-surface-container border border-outline-variant rounded-xl overflow-hidden flex flex-col max-h-96">
+            <div className="p-4 border-b border-outline-variant bg-surface-container-highest flex justify-between items-center">
+              <h3 className="text-[10px] font-bold tracking-widest text-primary uppercase flex items-center gap-2">
+                <Building2 className="w-4 h-4" /> OSM Infrastructure Assets
+              </h3>
+              <span className="text-xs font-mono text-on-surface-variant">{infrastructure?.length || 0} Total in Reach</span>
             </div>
             <div className="overflow-y-auto flex-1">
               <table className="w-full text-left text-sm">
                 <thead className="bg-surface-container-highest border-b border-outline-variant text-[10px] font-bold tracking-widest text-on-surface-variant uppercase sticky top-0">
                   <tr>
-                    <th className="px-6 py-3">Road/Bridge Name</th>
-                    <th className="px-6 py-3">Highway Type</th>
-                    <th className="px-6 py-3">Est. Risk Level</th>
+                    <th className="px-4 py-2.5">Asset</th>
+                    <th className="px-4 py-2.5">Type</th>
+                    <th className="px-4 py-2.5">Arrival</th>
+                    <th className="px-4 py-2.5">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant">
-                  {roads.features
-                    .map((road, idx) => {
-                      const riskLevel: RiskLevel = assessRoadRisk(road, currentExtent);
-                      return { road, riskLevel, id: road.id || `road-${idx}` };
-                    })
-                    // Show CRITICAL and MODERATE first, then SHALLOW, then SAFE
-                    .sort((a, b) => {
-                      const riskWeight: Record<RiskLevel, number> = { 'CRITICAL': 3, 'MODERATE': 2, 'SHALLOW': 1, 'SAFE': 0 };
-                      return riskWeight[b.riskLevel] - riskWeight[a.riskLevel];
-                    })
-                    .map(({ road, riskLevel, id }) => {
-                      let riskColor = 'text-green-400 bg-green-400/10 border-green-400/20';
-                      if (riskLevel === 'CRITICAL') riskColor = 'text-error bg-error/10 border-error/20';
-                      if (riskLevel === 'MODERATE') riskColor = 'text-orange-400 bg-orange-400/10 border-orange-400/20';
-                      if (riskLevel === 'SHALLOW') riskColor = 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20';
-                      
-                      const name = road.properties?.name || 'Unnamed segment';
-                      const type = road.properties?.bridge === 'yes' ? 'Bridge' : road.properties?.highway || 'Road';
+                  {infrastructure ? infrastructure.map((inf) => {
+                    const geoRisk = assessInfrastructureRisk(inf, currentExtent);
+                    const arrival = computePointArrival([inf.longitude, inf.latitude], simulationResults.timesteps);
+                    
+                    let riskColor = 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
+                    if (geoRisk === 'CRITICAL') riskColor = 'text-error bg-error/10 border-error/20';
+                    else if (geoRisk === 'MODERATE') riskColor = 'text-orange-400 bg-orange-400/10 border-orange-400/20';
+                    else if (geoRisk === 'SHALLOW') riskColor = 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20';
 
-                      return (
-                        <tr key={id} className="hover:bg-surface-container-highest/50 transition-colors">
-                          <td className="px-6 py-3 font-medium truncate max-w-[200px]" title={name}>{name}</td>
-                          <td className="px-6 py-3 capitalize text-on-surface-variant">{type}</td>
-                          <td className="px-6 py-3">
-                            <span className={`px-2 py-1 rounded text-[10px] font-bold border ${riskColor}`}>
-                              {riskLevel}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                    return (
+                      <tr key={inf.id} className="hover:bg-surface-container-highest/50 transition-colors">
+                        <td className="px-4 py-2.5 font-medium truncate max-w-[180px]" title={inf.name}>{inf.name}</td>
+                        <td className="px-4 py-2.5 capitalize text-xs text-on-surface-variant">{inf.type}</td>
+                        <td className="px-4 py-2.5 font-mono text-xs text-primary">
+                          {arrival.arrivalTimeMin !== null ? `T+${arrival.arrivalTimeMin}m` : 'Safe'}
+                        </td>
+                        <td className="px-4 py-2.5">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${riskColor}`}>
+                            {geoRisk}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  }) : (
+                    <tr>
+                      <td colSpan={4} className="px-6 py-6 text-center text-on-surface-variant text-xs">
+                        Reference infrastructure dataset unavailable for this study area.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
-        )}
+
+          {/* Transport Network (Roads & Bridges) Table */}
+          <div className="bg-surface-container border border-outline-variant rounded-xl overflow-hidden flex flex-col max-h-96">
+            <div className="p-4 border-b border-outline-variant bg-surface-container-highest flex justify-between items-center">
+              <h3 className="text-[10px] font-bold tracking-widest text-primary uppercase flex items-center gap-2">
+                <Activity className="w-4 h-4" /> Transport Routes & Evacuation Corridors
+              </h3>
+              <span className="text-xs font-mono text-on-surface-variant">{roads?.features?.length || 0} Road Segments</span>
+            </div>
+            <div className="overflow-y-auto flex-1">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-surface-container-highest border-b border-outline-variant text-[10px] font-bold tracking-widest text-on-surface-variant uppercase sticky top-0">
+                  <tr>
+                    <th className="px-4 py-2.5">Road / Corridor</th>
+                    <th className="px-4 py-2.5">Class</th>
+                    <th className="px-4 py-2.5">T+{timeMin} Risk</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline-variant">
+                  {roads?.features ? (
+                    roads.features
+                      .map((road, idx) => {
+                        const riskLevel = assessRoadRisk(road, currentExtent);
+                        return { road, riskLevel, id: road.id || `road-${idx}` };
+                      })
+                      .sort((a, b) => {
+                        const weight: Record<string, number> = { 'CRITICAL': 3, 'MODERATE': 2, 'SHALLOW': 1, 'SAFE': 0 };
+                        return (weight[b.riskLevel] || 0) - (weight[a.riskLevel] || 0);
+                      })
+                      .slice(0, 50)
+                      .map(({ road, riskLevel, id }) => {
+                        let riskColor = 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
+                        if (riskLevel === 'CRITICAL') riskColor = 'text-error bg-error/10 border-error/20';
+                        else if (riskLevel === 'MODERATE') riskColor = 'text-orange-400 bg-orange-400/10 border-orange-400/20';
+                        else if (riskLevel === 'SHALLOW') riskColor = 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20';
+
+                        const name = road.properties?.name || 'Unnamed Road Segment';
+                        const type = road.properties?.bridge === 'yes' ? 'Bridge' : road.properties?.highway || 'Road';
+
+                        return (
+                          <tr key={id} className="hover:bg-surface-container-highest/50 transition-colors">
+                            <td className="px-4 py-2.5 font-medium truncate max-w-[200px]" title={name}>{name}</td>
+                            <td className="px-4 py-2.5 capitalize text-xs text-on-surface-variant">{type}</td>
+                            <td className="px-4 py-2.5">
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${riskColor}`}>
+                                {riskLevel}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })
+                  ) : (
+                    <tr>
+                      <td colSpan={3} className="px-6 py-6 text-center text-on-surface-variant text-xs">
+                        Transport network dataset unavailable for this study area.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
         
-        <div className="flex items-start gap-3 bg-surface-container-highest p-4 rounded text-on-surface-variant text-xs border border-outline-variant">
-          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-          <p>This assessment uses prototype geometric ray-casting for inundation mapping. It should not be used for actual emergency planning or decision making.</p>
+        {/* Scientific Disclaimer Footer */}
+        <div className="flex items-start gap-3 bg-surface-container-highest p-4 rounded-lg text-on-surface-variant text-xs border border-outline-variant">
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-warning" />
+          <p>
+            <strong>HADR Analytical Framework Disclaimer:</strong> Inundation arrival times and risk scores are derived from prototype geometric ray-casting and empirical regression calculations. This system serves as a decision-support prototype and does not replace statutory 2D hydrodynamic safety validations.
+          </p>
         </div>
 
       </div>

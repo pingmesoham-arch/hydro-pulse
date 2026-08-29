@@ -19,7 +19,6 @@ function Dashboard() {
   const damDistrict = selectedDam?.district || 'Nashik';
   const studyData = selectedDam ? getStudyAreaData(selectedDam.id) : null;
 
-  // Clean up unused/unnecessary local state mappings
   return (
     <>
       <GisMap />

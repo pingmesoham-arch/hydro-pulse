@@ -4,8 +4,9 @@ import { useSimulationStore } from '../store/useSimulationStore';
 import clsx from 'clsx';
 import DemoWalkthrough from '../components/DemoWalkthrough';
 import { useState } from 'react';
-
 import { getStudyAreaData } from '../data/studyAreas/resolver';
+import teamLogo from '../assets/team-logo.png';
+import { dams } from '../data/dams';
 
 function LayersPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { activeTheme, setActiveTheme, mapLayers, setMapLayers, selectedDam } = useSimulationStore();
@@ -156,9 +157,6 @@ function SideNavBar({ onToggleLayers }: { onToggleLayers: () => void }) {
     </nav>
   );
 }
-
-import teamLogo from '../assets/team-logo.png';
-import { dams } from '../data/dams';
 
 function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { activeTheme, setActiveTheme, autoCenterMap, setAutoCenterMap, showMapLabels, setShowMapLabels } = useSimulationStore();

@@ -48,25 +48,19 @@ The proposed software should provide a modelling framework that can:
 
 ## Important Constraint
 
-This project is initially a frontend prototype.
+## Implementation Boundaries & Scientific Integrity
 
-The frontend must not falsely claim that it performs real
-hydrodynamic calculations unless a real simulation engine/backend
-has been integrated.
+Hydro_Pulse provides an interactive prototype for decision support and HADR scenario evaluation.
 
-The first prototype may use realistic mock/precomputed data.
+To maintain scientific integrity:
+- The system explicitly distinguishes between empirical regression estimates and full 2D hydrodynamic solvers (e.g., HEC-RAS 2D).
+- Peak discharge is calculated from broad-crested weir opening hydraulics and Froehlich empirical regression formulas.
+- Downstream depth and velocity are calculated via Manning's open-channel equations.
+- Inundation extents for demonstrative study areas (e.g. Gangapur Dam) utilize precomputed geometric profiles for immediate, responsive client-side exploration.
 
-**Prototype Simulation Constraints:**
-* **Active Variable:** The hydrodynamic simulation calculation is currently driven exclusively by **Manning's Roughness (n)**.
-* **Bypassed Variables:** All other scenario parameters (Breach Width, Formation Time, Crest Failure) are visually represented in the UI but are temporarily disabled in the calculation logic.
-* **Expected Output:** Prototype simulation results currently reflect single-variable scaling based solely on the roughness coefficient.
+## Roadmap & Extension Points
 
-## Questions We Still Need To Resolve
-
-- Which river should be used for the prototype?
-- Which dam should be used?
-- Which DEM dataset should be used?
-- Which hydrodynamic model will eventually be used?
-- What parameters should the user be able to configure?
-- What outputs are most useful for disaster-management decisions?
-- What GIS layers should be displayed?
+- High-performance computing (HPC) backend integration with 2D hydrodynamic solvers.
+- Automated ingestion of real-time reservoir levels via CWC/WRIS telemetry.
+- Dynamic mesh rasterization directly from high-resolution DEM tiles.
+- PostGIS-backed spatial analytics for national-scale infrastructure databases.

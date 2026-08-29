@@ -59,9 +59,9 @@ The MVP should focus entirely on demonstrating the **user experience and value p
 *   **Visualization:** Display the mocked/precomputed flood extent polygons varying over time. Overlay this on open-source satellite imagery.
 *   **Impact Summary:** Provide a mocked statistics panel (e.g., "Estimated 5,000 people and 3 hospitals in the inundated zone").
 
-## 8. What a Sophomore Team Can Realistically Build
-A team of undergraduate engineering students can realistically achieve a highly polished and functional **Frontend Prototype**:
-*   **Mapping UI:** They can learn and implement modern web-mapping libraries (like Leaflet or Mapbox GL JS) with React, Vue, or Vanilla JS.
-*   **Data Integration:** They can source SRTM/ASTER DEMs and Sentinel imagery as base maps or static assets.
-*   **Scenario Mocking:** They can create realistic GeoJSON files representing flood extents at different time intervals (T+1hr, T+2hr, etc.) and build a UI to animate or step through them.
-*   **Avoid:** They should **not** attempt to build a custom hydrodynamic numerical solver from scratch (this is graduate-level fluid dynamics and numerical methods). Mocking the data ensures they can deliver a compelling proof-of-concept for the HADR use case within their timeframe.
+## 8. Engineering Scope & Implementation Boundaries
+The project prototype emphasizes delivery of a responsive, robust decision-support system:
+*   **GIS Mapping Engine:** Leaflet and React-Leaflet layered architecture with asynchronous GeoJSON chunk loading.
+*   **Hydraulic Approximations:** Transparent calculation pipeline utilizing broad-crested weir and Froehlich regression formulas.
+*   **Decision Support:** Instantaneous spatial ray-casting to evaluate infrastructure exposure across time.
+*   **Extensibility:** Designed with clean separation of data ingestion and calculation layers to allow seamless drop-in integration with 2D hydrodynamic solvers in future phases.

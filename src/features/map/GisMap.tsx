@@ -5,6 +5,7 @@ import { useSimulationStore } from '../../store/useSimulationStore';
 import { RoadsLayer } from './layers/RoadsLayer';
 import { InfrastructureLayer } from './layers/InfrastructureLayer';
 import { FloodExtentLayer } from './layers/FloodExtentLayer';
+import { LocationInspector } from './LocationInspector';
 import { Loader2 } from 'lucide-react';
 
 function MapController() {
@@ -118,6 +119,9 @@ export default function GisMap() {
             onLoadingChange={handleInfraLoadingChange}
           />
         )}
+
+        {/* Interactive Location Inspector HUD */}
+        <LocationInspector isLightMap={isLightMap} />
       </MapContainer>
     </div>
   );
