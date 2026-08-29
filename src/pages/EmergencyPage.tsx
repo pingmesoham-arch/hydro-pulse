@@ -18,6 +18,7 @@ import {
   generateHADRSummary, 
   computePointArrival 
 } from '../lib/hadr/hadrEngine';
+import { OperationalInputsPanel } from '../features/hadr/OperationalInputsPanel';
 import { useEffect, useState, useMemo } from 'react';
 import type * as GeoJSON from 'geojson';
 import clsx from 'clsx';
@@ -106,52 +107,55 @@ export default function EmergencyPage() {
 
         {/* HADR Situational Summary Cards */}
         <div className="grid grid-cols-4 gap-4">
-          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg">
-            <div className="flex items-center justify-between text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">
-              <span>Inundated Surface</span>
-              <Waves className="w-4 h-4 text-cyan-400" />
+          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between text-on-surface-variant text-[11px] font-bold uppercase tracking-wider mb-1">
+              <span className="text-on-surface font-semibold">Inundated Surface</span>
+              <Waves className="w-4 h-4 text-cyan-500" />
             </div>
-            <div className="text-2xl font-mono font-bold text-on-surface">{summary.inundatedAreaKm2} <span className="text-xs font-normal">km²</span></div>
-            <div className="text-[10px] text-on-surface-variant mt-1">At T+{timeMin} min extent</div>
+            <div className="text-2xl font-mono font-bold text-on-surface">{summary.inundatedAreaKm2} <span className="text-xs font-normal text-on-surface-variant">km²</span></div>
+            <div className="text-[11px] text-on-surface-variant font-medium mt-1">At T+{timeMin} min footprint</div>
           </div>
 
-          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg">
-            <div className="flex items-center justify-between text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">
-              <span>Earliest Arrival</span>
+          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between text-on-surface-variant text-[11px] font-bold uppercase tracking-wider mb-1">
+              <span className="text-on-surface font-semibold">Earliest Arrival</span>
               <Clock className="w-4 h-4 text-primary" />
             </div>
             <div className="text-2xl font-mono font-bold text-primary">
               {summary.earliestArrivalMin !== null ? `T+${summary.earliestArrivalMin} min` : 'None'}
             </div>
-            <div className="text-[10px] text-on-surface-variant mt-1">First downstream impact</div>
+            <div className="text-[11px] text-on-surface-variant font-medium mt-1">First downstream impact</div>
           </div>
 
-          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg">
-            <div className="flex items-center justify-between text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">
-              <span>Critical Facilities</span>
-              <Building2 className="w-4 h-4 text-orange-400" />
+          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between text-on-surface-variant text-[11px] font-bold uppercase tracking-wider mb-1">
+              <span className="text-on-surface font-semibold">Critical Facilities</span>
+              <Building2 className="w-4 h-4 text-orange-500" />
             </div>
             <div className="text-2xl font-mono font-bold text-on-surface">
               {summary.hospitalsAffected + summary.schoolsAffected + summary.bridgesAffected}
             </div>
-            <div className="text-[10px] text-on-surface-variant mt-1">
+            <div className="text-[11px] text-on-surface-variant font-medium mt-1">
               {summary.hospitalsAffected} Hosp • {summary.schoolsAffected} Sch • {summary.bridgesAffected} Brg
             </div>
           </div>
 
-          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg">
-            <div className="flex items-center justify-between text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-1">
-              <span>Transport Network</span>
+          <div className="bg-surface-container border border-outline-variant p-4 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between text-on-surface-variant text-[11px] font-bold uppercase tracking-wider mb-1">
+              <span className="text-on-surface font-semibold">Transport Network</span>
               <AlertOctagon className="w-4 h-4 text-error" />
             </div>
             <div className="text-2xl font-mono font-bold text-on-surface">
-              {summary.roadsAffected} <span className="text-xs font-normal">segments</span>
+              {summary.roadsAffected} <span className="text-xs font-normal text-on-surface-variant">segments</span>
             </div>
-            <div className="text-[10px] text-on-surface-variant mt-1">
+            <div className="text-[11px] text-on-surface-variant font-medium mt-1">
               ~{summary.estimatedAffectedRoadLengthKm} km cut off
             </div>
           </div>
         </div>
+
+        {/* Optional HADR Operational Planning Inputs */}
+        <OperationalInputsPanel earliestArrivalMin={summary.earliestArrivalMin} />
 
         {/* Evacuation Priority Queue */}
         <div className="bg-surface-container border border-outline-variant rounded-xl overflow-hidden shadow-lg">
