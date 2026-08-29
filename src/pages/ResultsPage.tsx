@@ -1,13 +1,21 @@
 import { useSimulationStore } from '../store/useSimulationStore';
 import { useNavigate } from 'react-router-dom';
 import { BarChart3, AlertTriangle, ArrowRight } from 'lucide-react';
-import { getStudyAreaData } from '../data/studyAreas/resolver';
+import { getStudyAreaData, fetchInfrastructure } from '../data/studyAreas/resolver';
 import { assessInfrastructureRisk } from '../lib/impact/infrastructure';
+import { useEffect, useState } from 'react';
 
 export default function ResultsPage() {
   const navigate = useNavigate();
   const { simulationStatus, simulationResults, selectedScenario, selectedDam, currentTimelineIndex } = useSimulationStore();
   const studyData = selectedDam ? getStudyAreaData(selectedDam.id) : null;
+  const [infrastructure, setInfrastructure] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    if (selectedDam) {
+      fetchInfrastructure(selectedDam.id).then(setInfrastructure);
+    }
+  }, [selectedDam]);
 
   if (simulationStatus !== 'ready' || !simulationResults || !selectedScenario || !selectedDam || !studyData?.hasFloodData) {
     return (
@@ -108,8 +116,8 @@ export default function ResultsPage() {
                 <div className="text-2xl font-mono font-bold text-on-surface mb-1">
                   {(() => {
                     let critical = 0;
-                    if (studyData?.infrastructure && currentHydrographData?.floodExtent) {
-                      studyData.infrastructure.forEach(inf => {
+                    if (infrastructure && currentHydrographData?.floodExtent) {
+                      infrastructure.forEach(inf => {
                         const riskLevel = assessInfrastructureRisk(inf, currentHydrographData.floodExtent);
                         if (riskLevel === 'CRITICAL') {
                           critical++;

@@ -10,9 +10,17 @@ import { getStudyAreaData } from '../../data/studyAreas/resolver';
 
 export default function ScenarioBuilder() {
   const navigate = useNavigate();
-  const { setSimulationStatus, setSimulationResults, simulationStatus, selectedDam, setSelectedDam, selectedScenario, setSelectedScenario, setMapLayers } = useSimulationStore();
-
-
+  const { 
+    setSimulationStatus, 
+    setSimulationResults, 
+    simulationStatus, 
+    selectedDam, 
+    setSelectedDam, 
+    selectedScenario, 
+    setSelectedScenario, 
+    setMapLayers,
+    setCurrentTimelineIndex 
+  } = useSimulationStore();
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [processingStep, setProcessingStep] = useState(0);
@@ -141,6 +149,7 @@ export default function ScenarioBuilder() {
                 if (simulationStatus === 'ready' || simulationStatus === 'error') {
                   setSimulationStatus('idle');
                   setSimulationResults(null);
+                  setCurrentTimelineIndex(0);
                 }
               }}
               className="w-full bg-surface-container-highest border border-outline-variant rounded px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary"
@@ -182,6 +191,7 @@ export default function ScenarioBuilder() {
                   if (simulationStatus === 'ready' || simulationStatus === 'error') {
                     setSimulationStatus('idle');
                     setSimulationResults(null);
+                    setCurrentTimelineIndex(0);
                   }
                 }}
                 className={`w-full bg-surface-container-highest border ${errors.manningN ? 'border-error focus:border-error' : 'border-outline-variant focus:border-primary'} rounded px-3 py-2 text-sm text-on-surface focus:outline-none`}

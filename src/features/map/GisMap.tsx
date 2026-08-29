@@ -1,8 +1,11 @@
-import { useEffect } from 'react';
-import { MapContainer, TileLayer, Popup, useMap, CircleMarker, GeoJSON, Tooltip } from 'react-leaflet';
+import { useEffect, useState, useCallback } from 'react';
+import { MapContainer, TileLayer, Popup, useMap, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useSimulationStore } from '../../store/useSimulationStore';
-import { getStudyAreaData } from '../../data/studyAreas/resolver';
+import { RoadsLayer } from './layers/RoadsLayer';
+import { InfrastructureLayer } from './layers/InfrastructureLayer';
+import { FloodExtentLayer } from './layers/FloodExtentLayer';
+import { Loader2 } from 'lucide-react';
 
 function MapController() {
   const map = useMap();
@@ -19,8 +22,7 @@ function MapController() {
 
 export default function GisMap() {
   const { selectedDam, selectedScenario, simulationResults, currentTimelineIndex, mapLayers, showMapLabels, activeTheme } = useSimulationStore();
-  const studyData = selectedDam ? getStudyAreaData(selectedDam.id) : null;
-
+  
   const centerCoord: [number, number] = selectedDam ? [selectedDam.latitude, selectedDam.longitude] : [20.03535, 73.68311];
   
   const currentExtent = simulationResults?.timesteps?.[currentTimelineIndex]?.floodExtent;
@@ -29,8 +31,27 @@ export default function GisMap() {
 
   const basemapUrl = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
 
+  const [isRoadsLoading, setIsRoadsLoading] = useState(false);
+  const [isInfraLoading, setIsInfraLoading] = useState(false);
+
+  const handleRoadsLoadingChange = useCallback((loading: boolean) => {
+    setIsRoadsLoading(loading);
+  }, []);
+
+  const handleInfraLoadingChange = useCallback((loading: boolean) => {
+    setIsInfraLoading(loading);
+  }, []);
+
+  const isMapLoading = isRoadsLoading || isInfraLoading;
+
   return (
     <div className="w-full h-full relative z-0 bg-background">
+      {isMapLoading && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-surface-container-highest/90 backdrop-blur-sm px-4 py-2 rounded-full border border-outline-variant shadow-lg flex items-center gap-2 pointer-events-none transition-opacity duration-300">
+          <Loader2 className="w-4 h-4 animate-spin text-primary" />
+          <span className="text-xs font-semibold text-on-surface">Loading geospatial data...</span>
+        </div>
+      )}
       <MapContainer 
         center={centerCoord} 
         zoom={13} 
@@ -42,6 +63,7 @@ export default function GisMap() {
             key={basemapUrl}
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             maxZoom={19}
+            keepBuffer={2}
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
         )}
@@ -70,111 +92,32 @@ export default function GisMap() {
           </CircleMarker>
         )}
         
-        {mapLayers.roads && studyData?.roads && (
-          <GeoJSON 
-            key={`roads-${selectedDam?.id}-${isLightMap}`}
-            data={studyData.roads}
-            style={(feature) => {
-              const highway = feature?.properties?.highway;
-              
-              let weight = isLightMap ? 1 : 1.5;
-              let color = isLightMap ? '#94a3b8' : '#475569';
-              
-              if (highway === 'trunk' || highway === 'motorway') {
-                weight = isLightMap ? 2.5 : 3;
-                color = isLightMap ? '#475569' : '#94a3b8';
-              } else if (highway === 'primary') {
-                weight = isLightMap ? 2 : 2.5;
-                color = isLightMap ? '#64748b' : '#cbd5e1';
-              } else if (highway === 'secondary') {
-                weight = isLightMap ? 1.5 : 2;
-                color = isLightMap ? '#94a3b8' : '#e2e8f0';
-              }
-
-              return {
-                color,
-                weight,
-                opacity: isLightMap ? 0.9 : 0.8
-              };
-            }}
+        {mapLayers.roads && selectedDam && (
+          <RoadsLayer 
+            damId={selectedDam.id} 
+            isLightMap={isLightMap} 
+            onLoadingChange={handleRoadsLoadingChange} 
           />
         )}
         
         {mapLayers.floodExtent && currentExtent && selectedDam?.id === 'gangapur-dam' && (
-          <GeoJSON 
-            key={`${selectedDam?.id}-${selectedScenario?.scenario?.id}-${currentTimelineIndex}-${isLightMap}`}
-            data={currentExtent} 
-            style={(feature) => {
-              // Default (Dark map)
-              let color = '#00b4d8';
-              let fillColor = '#4cd6fb';
-              let fillOpacity = 0.3;
-              
-              const depth = feature?.properties?.depthCategory;
-              
-              if (isLightMap) {
-                if (depth === 'SHALLOW' || !depth) {
-                  color = '#38BDF8';
-                  fillColor = '#38BDF8';
-                  fillOpacity = 0.4;
-                } else if (depth === 'MODERATE') {
-                  color = '#0284C7';
-                  fillColor = '#0284C7';
-                  fillOpacity = 0.6;
-                } else if (depth === 'CRITICAL') {
-                  color = '#0C4A6E';
-                  fillColor = '#0C4A6E';
-                  fillOpacity = 0.75;
-                }
-              } else {
-                if (depth === 'MODERATE') {
-                  color = '#0077b6';
-                  fillColor = '#0096c7';
-                  fillOpacity = 0.5;
-                } else if (depth === 'CRITICAL') {
-                  color = '#03045e';
-                  fillColor = '#023e8a';
-                  fillOpacity = 0.7;
-                }
-              }
-
-              return {
-                color, 
-                fillColor, 
-                fillOpacity,
-                weight: isLightMap ? 1 : 2
-              };
-            }}
+          <FloodExtentLayer 
+            damId={selectedDam.id}
+            scenarioId={selectedScenario?.scenario?.id}
+            timelineIndex={currentTimelineIndex}
+            isLightMap={isLightMap}
+            currentExtent={currentExtent}
           />
         )}
 
-        {mapLayers.infrastructure && studyData?.infrastructure && studyData.infrastructure.map(inf => {
-          let markerColor = '#facc15'; // Default yellow
-          
-          if (isLightMap) {
-            if (inf.type === 'hospital') markerColor = '#ef4444'; // Red
-            else if (inf.type === 'school') markerColor = '#f59e0b'; // Amber
-            else if (inf.type === 'bridge') markerColor = '#64748b'; // Slate
-            else markerColor = '#0891b2'; // Cyan
-          }
-
-          return (
-            <CircleMarker
-              key={inf.id}
-              center={[inf.latitude, inf.longitude]}
-              radius={5}
-              pathOptions={{ color: isLightMap ? '#ffffff' : markerColor, fillColor: markerColor, fillOpacity: 0.9, weight: 1.5 }}
-            >
-              {showMapLabels && (
-                <Tooltip direction="top" offset={[0, -10]} opacity={1} permanent={false}>
-                  {inf.name} ({inf.type})
-                </Tooltip>
-              )}
-            </CircleMarker>
-          );
-        })}
-
-
+        {mapLayers.infrastructure && selectedDam && (
+          <InfrastructureLayer
+            damId={selectedDam.id}
+            isLightMap={isLightMap}
+            showMapLabels={showMapLabels}
+            onLoadingChange={handleInfraLoadingChange}
+          />
+        )}
       </MapContainer>
     </div>
   );
